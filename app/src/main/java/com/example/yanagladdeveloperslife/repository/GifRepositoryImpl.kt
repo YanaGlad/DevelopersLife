@@ -1,15 +1,19 @@
 package com.example.yanagladdeveloperslife.repository
 
 import com.example.yanagladdeveloperslife.api.RemoteDataProvider
+import com.example.yanagladdeveloperslife.db.LocalFavouritesDataProvider
+import com.example.yanagladdeveloperslife.models.GifModel
 import com.example.yanagladdeveloperslife.viewstate.RandomGifViewState
 import com.example.yanagladdeveloperslife.viewstate.RecyclerGifViewState
+import io.reactivex.Flowable
 import io.reactivex.Single
 import io.reactivex.schedulers.Schedulers
 import java.io.IOException
 import javax.inject.Inject
 
 class GifRepositoryImpl @Inject constructor(
-    private val remoteDataProvider: RemoteDataProvider
+    private val remoteDataProvider: RemoteDataProvider,
+    private val localDataProvider: LocalFavouritesDataProvider
 ) : GifRepository {
 
     override fun getRandomGif(): Single<RandomGifViewState> =
@@ -80,4 +84,12 @@ class GifRepositoryImpl @Inject constructor(
                     }
                 )
         }
+
+    override fun addGifToFavourites(gifModel: GifModel) {
+        localDataProvider.insertFavourite(gifModel)
+    }
+
+    override fun getFavourites(): Flowable<List<GifModel>> =
+        localDataProvider.getAllFavourites()
+
 }

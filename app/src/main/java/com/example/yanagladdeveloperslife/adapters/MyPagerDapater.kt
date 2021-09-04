@@ -7,7 +7,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
 import com.example.yanagladdeveloperslife.R
-import com.example.yanagladdeveloperslife.fragments.ButtonSupportedFragment
+import com.example.yanagladdeveloperslife.fragments.FavouritesFragment
 
 import com.example.yanagladdeveloperslife.fragments.RandomFragment
 import com.example.yanagladdeveloperslife.fragments.RecyclerFragment
@@ -15,14 +15,16 @@ import com.example.yanagladdeveloperslife.fragments.RecyclerFragment
 class MyPagerAdapter(private val context: Context, manager: FragmentManager?) :
     FragmentPagerAdapter(manager!!, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
     private lateinit var randomFragment: RandomFragment
-    private lateinit var recyclerFragment1: RecyclerFragment
-    private lateinit var recyclerFragment2: RecyclerFragment
+    private lateinit var topFragment: RecyclerFragment
+    private lateinit var latestFragment: RecyclerFragment
+    private lateinit var favouritesFragment: FavouritesFragment
 
     val currentFragment: Fragment?
         get() {
             if (randomFragment.isOnScreen) return randomFragment
-            if (recyclerFragment1.isOnScreen) return recyclerFragment1
-            return if (recyclerFragment2.isOnScreen) recyclerFragment2 else null
+            if (topFragment.isOnScreen) return topFragment
+            if(favouritesFragment.isOnScreen) return favouritesFragment
+            return if (latestFragment.isOnScreen) latestFragment else null
         }
 
     override fun setPrimaryItem(container: ViewGroup, position: Int, obj: Any) {
@@ -30,17 +32,20 @@ class MyPagerAdapter(private val context: Context, manager: FragmentManager?) :
         if (randomFragment.isOnScreen && randomFragment !== obj) {
             randomFragment.isOnScreen = false
         }
-        if (recyclerFragment1.isOnScreen && recyclerFragment1 !== obj) {
-            recyclerFragment1.isOnScreen = false
+        if (topFragment.isOnScreen && topFragment !== obj) {
+            topFragment.isOnScreen = false
         }
-        if (recyclerFragment2.isOnScreen && recyclerFragment2 !== obj) {
-            recyclerFragment2.isOnScreen = false
+        if (latestFragment.isOnScreen && latestFragment !== obj) {
+            latestFragment.isOnScreen = false
+        }
+        if (favouritesFragment.isOnScreen && favouritesFragment !== obj) {
+            favouritesFragment.isOnScreen = false
         }
         when (position) {
             0 -> randomFragment.isOnScreen = true
-            1 -> recyclerFragment1.isOnScreen = true
-            2 -> recyclerFragment2.isOnScreen = true
-            3->{}
+            1 -> topFragment.isOnScreen = true
+            2 -> latestFragment.isOnScreen = true
+            3 -> favouritesFragment.isOnScreen = true
         }
 
 
@@ -54,15 +59,16 @@ class MyPagerAdapter(private val context: Context, manager: FragmentManager?) :
                 return randomFragment
             }
             1 -> {
-                recyclerFragment1 = RecyclerFragment.newInstance("latest")
-                return recyclerFragment1
+                topFragment = RecyclerFragment.newInstance("latest")
+                return topFragment
             }
             2 -> {
-                recyclerFragment2 = RecyclerFragment.newInstance("top")
-                return recyclerFragment2
+                latestFragment = RecyclerFragment.newInstance("top")
+                return latestFragment
             }
-            3->{
-
+            3 -> {
+                favouritesFragment = FavouritesFragment.newInstance()
+                return favouritesFragment
             }
         }
         Log.e("PagerAdapter getItem", "Error at position$position")

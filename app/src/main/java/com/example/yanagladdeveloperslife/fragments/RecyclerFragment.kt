@@ -103,7 +103,6 @@ class RecyclerFragment : ButtonSupportedFragment() {
         recyclerFragmentViewModel.getGifModels().observe(viewLifecycleOwner) { gifs ->
             if (gifs != null) {
                 recyclerFragmentViewModel.setError(ErrorHandler.SUCCESS)
-
                 gifsRecyclerAdapter?.submitList(gifs)
                 binding.recyclerview.adapter = gifsRecyclerAdapter
             }

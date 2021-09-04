@@ -22,6 +22,8 @@ import com.example.yanagladdeveloperslife.values.ErrorHandler
 import com.example.yanagladdeveloperslife.viewmodel.RandomFragmentViewModel
 import com.example.yanagladdeveloperslife.viewstate.RandomGifViewState
 import dagger.hilt.android.AndroidEntryPoint
+import io.reactivex.Observable
+import io.reactivex.schedulers.Schedulers
 
 @AndroidEntryPoint
 class RandomFragment : ButtonSupportedFragment() {
@@ -122,6 +124,15 @@ class RandomFragment : ButtonSupportedFragment() {
         val onNextClickListener = View.OnClickListener { loadGif() }
         binding.buttonsLayout.btnPrevious.setOnClickListener(onPrevClickListener)
         binding.buttonsLayout.btnNext.setOnClickListener(onNextClickListener)
+
+        binding.favsButton.setOnClickListener {
+            Observable.just(randomFragmentViewModel)
+                .subscribeOn(Schedulers.io())
+                .subscribe { db ->
+                    db.addGifToDb(randomFragmentViewModel.getCurrentGif().value!!)
+                }
+
+         }
     }
 
     private fun onGifLoaded(viewState: RandomGifViewState.Loaded) {

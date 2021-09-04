@@ -9,6 +9,9 @@ import com.example.yanagladdeveloperslife.values.ErrorHandler
 
 import com.example.yanagladdeveloperslife.viewstate.RandomGifViewState
 import dagger.hilt.android.lifecycle.HiltViewModel
+import io.reactivex.Flowable.just
+import io.reactivex.Maybe.just
+import io.reactivex.Single.just
 import io.reactivex.schedulers.Schedulers
 import java.util.*
 import javax.inject.Inject
@@ -35,6 +38,11 @@ class RandomFragmentViewModel @Inject constructor(private val gifRepository: Gif
 
     fun getIsCurrentGifLoaded(): LiveData<Boolean> {
         return isCurrentGifLoaded
+    }
+
+    fun addGifToDb(gifModel: GifModel){
+        gifRepository.addGifToFavourites(gifModel)
+        Log.d("LIST", "ADDED!")
     }
 
     fun setIsCurrentGifLoaded(isCurrentGifLoaded: Boolean) {

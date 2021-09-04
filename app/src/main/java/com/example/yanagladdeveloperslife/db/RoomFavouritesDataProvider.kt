@@ -1,5 +1,6 @@
 package com.example.yanagladdeveloperslife.db
 
+import android.util.Log
 import com.example.yanagladdeveloperslife.db.enitity.GifEntity
 import com.example.yanagladdeveloperslife.models.GifModel
 import io.reactivex.Flowable
@@ -31,8 +32,15 @@ class RoomFavouritesDataProvider @Inject constructor(val dao: GifDao) :
         )
 
 
-    override fun getAllFavourites(): Flowable<List<GifModel>> =
-        dao.getAllFavourites()
+    override fun getAllFavourites(): Flowable<List<GifModel>> {
+//        dao.getAllFavourites().doOnNext { gifs ->
+//            gifs.map {
+//                gif ->
+//                println(" GIF ${gif.description}")
+//            }
+//        }.subscribe()
+
+        return dao.getAllFavourites()
             .map { gifs ->
                 gifs.map { item ->
                     GifModel(
@@ -56,6 +64,7 @@ class RoomFavouritesDataProvider @Inject constructor(val dao: GifDao) :
                     )
                 }
             }
+    }
 
 
     override fun deleteFavourite(item: GifModel) =

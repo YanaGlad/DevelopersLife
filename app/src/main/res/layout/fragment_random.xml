@@ -36,7 +36,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
 
-                <RelativeLayout
+                <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">
 
@@ -46,7 +46,19 @@
                         android:layout_height="match_parent"
                         android:adjustViewBounds="true"
                         android:scaleType="centerCrop"
+                        style="@style/AppSelectableItem"
                         android:src="@drawable/waiting_background" />
+
+                    <androidx.appcompat.widget.AppCompatImageButton
+                        android:id="@+id/favs_button"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:background="@null"
+                        android:layout_margin="8dp"
+                        android:scaleType="centerCrop"
+                        android:src="@drawable/ic_star"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
 
                     <ProgressBar
                         android:id="@+id/load_progressbar"
@@ -57,7 +69,11 @@
                         android:indeterminate="true"
                         android:paddingBottom="?actionBarSize"
                         android:theme="@style/Theme.AppCompat.Light"
-                        android:visibility="visible" />
+                        android:visibility="visible"
+                        app:layout_constraintBottom_toBottomOf="@+id/load_image"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
 
 
                     <androidx.appcompat.widget.LinearLayoutCompat
@@ -68,7 +84,10 @@
                         android:background="@color/black_transp"
                         android:orientation="vertical"
                         android:paddingStart="@dimen/sixteen_step"
-                        android:paddingEnd="@dimen/sixteen_step">
+                        android:paddingEnd="@dimen/sixteen_step"
+                        app:layout_constraintBottom_toBottomOf="@+id/load_image"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent">
 
                         <androidx.appcompat.widget.AppCompatTextView
                             android:id="@+id/load_description"
@@ -98,7 +117,7 @@
                         android:textColor="@android:color/white"
                         android:visibility="gone" />
 
-                </RelativeLayout>
+                </androidx.constraintlayout.widget.ConstraintLayout>
             </androidx.cardview.widget.CardView>
         </androidx.core.widget.NestedScrollView>
 
