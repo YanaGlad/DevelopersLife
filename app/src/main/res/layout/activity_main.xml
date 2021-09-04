@@ -47,21 +47,11 @@
 
 
                 <androidx.appcompat.widget.AppCompatImageView
-                    android:id="@+id/appCompatImageView2"
                     android:layout_width="match_parent"
-                    android:layout_height="100dp"
-                    android:scaleType="fitEnd"
-                    android:layout_gravity="bottom"
-                    app:layout_collapseMode="pin"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.0"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintVertical_bias="0.0"
-                    app:srcCompat="@drawable/logoru" />
-
-
+                    android:layout_height="match_parent"
+                    android:src="@drawable/devs_background_nologo"
+                    android:scaleType="centerCrop"
+                    />
                 <androidx.constraintlayout.widget.Guideline
                     android:id="@+id/guideline2"
                     android:layout_width="wrap_content"
@@ -100,7 +90,7 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:tabSelectedTextColor="@android:color/holo_blue_light"
+                app:tabSelectedTextColor="@color/purple_500"
                 app:tabTextAppearance="@style/TextAppearance.AppCompat.Small">
 
                 <com.google.android.material.tabs.TabItem
