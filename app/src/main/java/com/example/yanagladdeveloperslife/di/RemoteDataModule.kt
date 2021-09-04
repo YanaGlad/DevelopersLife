@@ -14,6 +14,6 @@ interface RemoteDataModule {
 
     @Binds
     @Reusable
-    fun bindRemoteWalletDataProvider(remoteDataProviderImpl: RemoteDataProviderImpl) : RemoteDataProvider
+    fun bindRemoteFavouritesDataProvider(remoteDataProviderImpl: RemoteDataProviderImpl) : RemoteDataProvider
 
 }

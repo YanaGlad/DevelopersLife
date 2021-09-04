@@ -14,5 +14,5 @@ interface RepositoryModule {
 
     @Singleton
     @Binds
-    fun bindAuthRepository(gifRepositoryImpl: GifRepositoryImpl): GifRepository
+    fun bindGifsRepository(gifRepositoryImpl: GifRepositoryImpl): GifRepository
 }

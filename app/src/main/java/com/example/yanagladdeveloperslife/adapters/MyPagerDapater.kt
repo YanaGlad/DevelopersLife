@@ -26,8 +26,6 @@ class MyPagerAdapter(private val context: Context, manager: FragmentManager?) :
         }
 
     override fun setPrimaryItem(container: ViewGroup, position: Int, obj: Any) {
-        Log.d("PagerAdapterPos", "POS: $position")
-        Log.d("CRE", "WAHAHAHAH")
 
         if (randomFragment.isOnScreen && randomFragment !== obj) {
             randomFragment.isOnScreen = false
@@ -42,6 +40,7 @@ class MyPagerAdapter(private val context: Context, manager: FragmentManager?) :
             0 -> randomFragment.isOnScreen = true
             1 -> recyclerFragment1.isOnScreen = true
             2 -> recyclerFragment2.isOnScreen = true
+            3->{}
         }
 
 
@@ -62,6 +61,9 @@ class MyPagerAdapter(private val context: Context, manager: FragmentManager?) :
                 recyclerFragment2 = RecyclerFragment.newInstance("top")
                 return recyclerFragment2
             }
+            3->{
+
+            }
         }
         Log.e("PagerAdapter getItem", "Error at position$position")
         return RandomFragment()
@@ -72,12 +74,13 @@ class MyPagerAdapter(private val context: Context, manager: FragmentManager?) :
             0 -> return context.getString(R.string.random)
             1 -> return context.getString(R.string.latest)
             2 -> return context.getString(R.string.top)
+            3 -> return context.getString(R.string.favourite)
         }
         Log.e("PagerAdapter getItem", "Error at position$position")
         return context.getString(R.string.random)
     }
 
     override fun getCount(): Int {
-        return 3
+        return 4
     }
 }
