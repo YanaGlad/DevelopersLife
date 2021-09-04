@@ -10,7 +10,6 @@ import io.reactivex.Flowable
 
 interface LocalFavouritesDataProvider {
     fun insertFavourite(item : GifModel)
-    fun getAllCategoriesByIncome(id : Long) : Flowable<List<GifModel>>
     fun getAllFavourites() : Flowable<List<GifModel>>
     fun deleteFavourite(item : GifModel)
 }

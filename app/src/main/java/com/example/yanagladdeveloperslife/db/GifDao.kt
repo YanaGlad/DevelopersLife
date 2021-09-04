@@ -9,9 +9,6 @@ interface GifDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertFavourite(item : GifEntity)
 
-    @Query(value = "Select * from `favourites` where id = :id " )
-    fun getAllCategoriesByIncome(id : Long) : Flowable<List<GifEntity>>
-
     @Query("Select * from `favourites`" )
     fun getAllFavourites() : Flowable<List<GifEntity>>
 
