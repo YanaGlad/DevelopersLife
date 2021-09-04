@@ -41,9 +41,6 @@ class RandomFragment : ButtonSupportedFragment() {
     ): View {
         _binding = FragmentRandomBinding.inflate(layoutInflater)
 
-        btnPrev = binding.btnPrevious
-        btnNex =  binding.btnNext
-
         setupButtonListeners()
         setupObservers()
 
@@ -67,11 +64,11 @@ class RandomFragment : ButtonSupportedFragment() {
                 View.VISIBLE
         }
         randomFragmentViewModel.getCanLoadNext().observe(viewLifecycleOwner) { enabled: Boolean? ->
-            if (isOnScreen) btnNex.isEnabled = enabled!!
+            if (isOnScreen) binding.buttonsLayout.btnNext.isEnabled = enabled!!
         }
 
         randomFragmentViewModel.getCanLoadPrevious().observe(viewLifecycleOwner) { enabled ->
-            if (isOnScreen) btnPrev.isEnabled = enabled
+            if (isOnScreen) binding.buttonsLayout.btnPrevious.isEnabled = enabled
         }
 
         randomFragmentViewModel.getError().observe(viewLifecycleOwner) { e ->
@@ -110,7 +107,7 @@ class RandomFragment : ButtonSupportedFragment() {
     }
 
     private fun setupButtonListeners() {
-        onPrevClickListener = View.OnClickListener {
+        val onPrevClickListener = View.OnClickListener {
             if (!randomFragmentViewModel.goBack()) Log.e(
                 "Cache is empty",
                 "No cached gifs"
@@ -122,9 +119,9 @@ class RandomFragment : ButtonSupportedFragment() {
                 e.printStackTrace()
             }
         }
-        onNextClickListener = View.OnClickListener { loadGif() }
-        btnPrev.setOnClickListener(onPrevClickListener)
-        btnNex.setOnClickListener(onNextClickListener)
+        val onNextClickListener = View.OnClickListener { loadGif() }
+        binding.buttonsLayout.btnPrevious.setOnClickListener(onPrevClickListener)
+        binding.buttonsLayout.btnNext.setOnClickListener(onNextClickListener)
     }
 
     private fun onGifLoaded(viewState: RandomGifViewState.Loaded) {

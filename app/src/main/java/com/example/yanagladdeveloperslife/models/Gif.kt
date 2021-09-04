@@ -33,7 +33,7 @@ data class Gif(
             gifSize!!,
             previewURL!!,
             videoURL,
-            videoPath!!,
+            videoPath ,
             videoSize!!,
             type!!,
             width!!,

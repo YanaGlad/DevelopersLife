@@ -10,7 +10,7 @@ class GifModel(
     val gifSize: Int,
     val previewURL: String?,
     val videoURL: String?,
-    val videoPath: String,
+    val videoPath: String?,
     val videoSize: Int,
     val type: String,
     val width: String,

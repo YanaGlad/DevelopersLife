@@ -59,8 +59,7 @@ class RecyclerFragment : ButtonSupportedFragment() {
     ): View {
         _binding = FragmentRecycleBinding.inflate(layoutInflater)
 
-        btnPrev = binding.btnPrevious
-        btnNex = binding.btnNext
+
 
         setupRecycler()
         setupOnNextOnPrevListeners()
@@ -80,7 +79,7 @@ class RecyclerFragment : ButtonSupportedFragment() {
     }
 
     private fun setupOnNextOnPrevListeners() {
-        onNextClickListener = View.OnClickListener {
+        val onNextClickListener = View.OnClickListener {
             type?.let { type ->
                 loadGifs(
                     PageOperation.NEXT,
@@ -88,7 +87,7 @@ class RecyclerFragment : ButtonSupportedFragment() {
                 )
             }
         }
-        onPrevClickListener = View.OnClickListener {
+       val onPrevClickListener = View.OnClickListener {
             type?.let { type ->
                 loadGifs(
                     PageOperation.PREVIOUS,
@@ -96,9 +95,8 @@ class RecyclerFragment : ButtonSupportedFragment() {
                 )
             }
         }
-        binding.btnNext.setOnClickListener(onNextClickListener)
-        binding.btnPrevious.setOnClickListener(onPrevClickListener)
-
+        binding.buttonsLayout.btnNext.setOnClickListener(onNextClickListener)
+        binding.buttonsLayout.btnPrevious.setOnClickListener(onPrevClickListener)
     }
 
     private fun setupObservers() {
@@ -133,10 +131,10 @@ class RecyclerFragment : ButtonSupportedFragment() {
             }
         }
         recyclerFragmentViewModel.getCanLoadNext().observe(viewLifecycleOwner) { enabled ->
-            if (isOnScreen) btnNex.isEnabled = enabled
+            if (isOnScreen)  binding.buttonsLayout.btnNext.isEnabled = enabled
         }
         recyclerFragmentViewModel.getCanLoadPrevious().observe(viewLifecycleOwner) { enabled ->
-            if (isOnScreen) btnPrev.isEnabled = enabled
+            if (isOnScreen)  binding.buttonsLayout.btnPrevious.isEnabled = enabled
         }
     }
 

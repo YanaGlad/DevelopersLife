@@ -18,7 +18,7 @@ class MyPagerAdapter(private val context: Context, manager: FragmentManager?) :
     private lateinit var recyclerFragment1: RecyclerFragment
     private lateinit var recyclerFragment2: RecyclerFragment
 
-    var currentFragment: ButtonSupportedFragment? =null
+    val currentFragment: Fragment?
         get() {
             if (randomFragment.isOnScreen) return randomFragment
             if (recyclerFragment1.isOnScreen) return recyclerFragment1
@@ -39,7 +39,7 @@ class MyPagerAdapter(private val context: Context, manager: FragmentManager?) :
             recyclerFragment2.isOnScreen = false
         }
         when (position) {
-            0 -> randomFragment.isOnScreen  = true
+            0 -> randomFragment.isOnScreen = true
             1 -> recyclerFragment1.isOnScreen = true
             2 -> recyclerFragment2.isOnScreen = true
         }

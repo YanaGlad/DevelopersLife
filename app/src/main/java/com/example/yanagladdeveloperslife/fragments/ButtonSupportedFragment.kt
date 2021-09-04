@@ -6,12 +6,6 @@ import com.google.android.material.floatingactionbutton.ExtendedFloatingActionBu
 
 abstract class ButtonSupportedFragment : Fragment(),
     Clickable {
-    protected lateinit var btnNex: ExtendedFloatingActionButton
-    protected lateinit var btnPrev: ExtendedFloatingActionButton
-
-    var onNextClickListener: View.OnClickListener? = null
-    get() = field
-    var onPrevClickListener: View.OnClickListener? = null
-    get() = field
+  
 }
 
