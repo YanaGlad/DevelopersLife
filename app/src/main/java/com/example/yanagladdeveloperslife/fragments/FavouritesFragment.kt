@@ -1,16 +1,15 @@
 package com.example.yanagladdeveloperslife.fragments
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.recyclerview.widget.GridLayoutManager
 import com.example.yanagladdeveloperslife.adapters.GifsRecyclerAdapter
 import com.example.yanagladdeveloperslife.databinding.FragmentFavouritesBinding
-import com.example.yanagladdeveloperslife.values.ErrorHandler
 import com.example.yanagladdeveloperslife.viewmodel.FavouritesFragmentViewModel
-import com.example.yanagladdeveloperslife.viewmodel.RecyclerFragmentViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -34,14 +33,22 @@ class FavouritesFragment : Fragment() {
         return binding.root
     }
 
+    private fun setupRecycler() {
+        binding.recyclerview.setHasFixedSize(true)
+        binding.recyclerview.layoutManager = GridLayoutManager(context, 1)
+        gifsRecyclerAdapter = GifsRecyclerAdapter(
+            "favs"
+        )
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setupRecycler()
 
-        favouritesFragmentViewModel.favsList.observe(viewLifecycleOwner) { gifs ->
-            if (gifs != null) {
-                gifsRecyclerAdapter?.submitList(gifs)
-                binding.recyclerview.adapter = gifsRecyclerAdapter
-            }
+        favouritesFragmentViewModel.favsList.observe(viewLifecycleOwner) {
+            gifsRecyclerAdapter?.submitList(favouritesFragmentViewModel.favsList.value)
+            binding.recyclerview.adapter = gifsRecyclerAdapter
+
         }
     }
 
