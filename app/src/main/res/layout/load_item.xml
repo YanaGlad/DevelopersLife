@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView
+    android:id="@+id/rnd_cardview"
+    android:layout_width="match_parent"
+    android:layout_height="200dp"
+    android:layout_marginStart="@dimen/eight_step"
+    android:layout_marginTop="@dimen/sixteen_step"
+    android:layout_marginEnd="@dimen/eight_step"
+    app:cardCornerRadius="15dp"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/load_image"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:adjustViewBounds="true"
+            android:scaleType="centerCrop"
+            android:src="@drawable/waiting_background" />
+
+        <ProgressBar
+            android:id="@+id/load_progressbar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/load_linear_layout"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="30sp"
+            android:indeterminate="true"
+            android:theme="@style/Theme.AppCompat.Light"
+            android:visibility="visible" />
+
+
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:id="@+id/load_linear_layout"
+            android:layout_width="match_parent"
+            android:layout_height="72dp"
+            android:layout_alignParentBottom="true"
+            android:background="@color/black_transp"
+            android:orientation="vertical"
+            android:gravity="center_vertical"
+            android:paddingStart="@dimen/eight_step"
+            android:paddingEnd="@dimen/eight_step">
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/load_description"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                android:textColor="@android:color/white" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/load_author"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="@style/TextAppearance.AppCompat.Caption"
+                android:textColor="@color/transp_white" />
+        </androidx.appcompat.widget.LinearLayoutCompat>
+
+
+    </RelativeLayout>
+</androidx.cardview.widget.CardView>

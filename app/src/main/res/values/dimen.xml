@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="eight_step">8dp</dimen>
+    <dimen name="sixteen_step">16dp</dimen>
+    <dimen name="progress_bar_len">150sp</dimen>
+</resources>

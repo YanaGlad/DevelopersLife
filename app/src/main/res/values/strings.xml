@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name">Developers Life</string>
+    <string name="random">.random();</string>
+    <string name="latest">.byDate();</string>
+    <string name="top">.byRating();</string>
+    <string name="collapsing_toolbar_title">Developers Life</string>
+    <string name="retry">Подключиться заново</string>
+    <string name="no_internet">No internet connection</string>
+    <string name="next">.next();</string>
+    <string name="previous">.prev();</string>
+    <string name="error_posts_not_found">ERROR: Posts not found</string>
+    <string name="errorr">ERROR:</string>
+    <string name="by">By</string>
+
+</resources>
