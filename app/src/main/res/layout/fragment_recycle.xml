@@ -10,7 +10,7 @@
     <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
         android:id="@+id/btn_previous"
         android:layout_width="@dimen/btn_width"
-        android:layout_height="50dp"
+        android:layout_height="@dimen/btn_height"
         android:enabled="false"
         android:text="@string/previous"
         android:textAlignment="center"
@@ -18,7 +18,7 @@
         android:textSize="16sp"
         android:layout_marginTop="@dimen/sixteen_step"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"  />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
         android:id="@+id/btn_next"
@@ -31,7 +31,7 @@
         android:textSize="16sp"
         android:layout_marginTop="@dimen/sixteen_step"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"  />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.appcompat.widget.LinearLayoutCompat
         android:id="@+id/recycl_error_layout"
