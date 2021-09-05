@@ -5,6 +5,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.yanagladdeveloperslife.MainActivity
@@ -26,7 +27,7 @@ interface FavouriteHelper {
 }
 
 @AndroidEntryPoint
-class RecyclerFragment : ButtonSupportedFragment(), FavouriteHelper {
+class RecyclerFragment : Fragment(), FavouriteHelper, Clickable {
     var isOnScreen = false
     private var type: String? = null
     private val recyclerFragmentViewModel: RecyclerFragmentViewModel by viewModels()

@@ -30,12 +30,7 @@ class FavouritesFragmentViewModel @Inject constructor(private val gifRepository:
             .subscribeOn(Schedulers.io())
             .observeOn(Schedulers.io())
             .subscribe {
-                Log.d("TAG_LIST", " Is... ${it[0].author}")
                 favsList.postValue(it)
             }
-    }
-
-    fun addGifToDb(gifModel: GifModel){
-        gifRepository.addGifToFavourites(gifModel)
     }
 }

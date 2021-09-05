@@ -1,11 +1,11 @@
 package com.example.yanagladdeveloperslife.viewstate
 
-import com.example.yanagladdeveloperslife.models.Gifs
+import com.example.yanagladdeveloperslife.models.response.GifsResponse
 
 sealed class RecyclerGifViewState {
     object Loading : RecyclerGifViewState()
 
-    class Loaded(val gifs : Gifs) : RecyclerGifViewState()
+    class Loaded(val gifsResponse : GifsResponse) : RecyclerGifViewState()
 
     class Error{
         object NetworkError : RecyclerGifViewState()

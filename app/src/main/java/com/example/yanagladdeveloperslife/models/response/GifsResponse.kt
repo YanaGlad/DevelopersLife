@@ -1,13 +1,13 @@
-package com.example.yanagladdeveloperslife.models
+package com.example.yanagladdeveloperslife.models.response
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import java.util.*
 
-class Gifs {
+class GifsResponse {
     @SerializedName("result")
     @Expose
-    val gifs: ArrayList<Gif>? = null
+    val gifResponses: ArrayList<GifResponse>? = null
 
     @SerializedName("totalCount")
     @Expose

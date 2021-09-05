@@ -3,7 +3,7 @@ package com.example.yanagladdeveloperslife.viewmodel
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.example.yanagladdeveloperslife.models.Gif
+import com.example.yanagladdeveloperslife.models.response.GifResponse
 import com.example.yanagladdeveloperslife.models.GifModel
 import com.example.yanagladdeveloperslife.repository.GifRepository
 import com.example.yanagladdeveloperslife.values.ErrorHandler
@@ -63,7 +63,7 @@ class RecyclerFragmentViewModel @Inject constructor(private val gifRepository: G
         when (type) {
             "latest" -> {
                 response = currentPage.value?.let {
-                    gifRepository.getLatestGifs(it, 10, "gif")
+                    gifRepository.getLatestGifs(it, 10, "gifResponse")
                         .subscribeOn(Schedulers.io())
                         .observeOn(Schedulers.io())
                         .subscribe(
@@ -71,7 +71,7 @@ class RecyclerFragmentViewModel @Inject constructor(private val gifRepository: G
                                 run {
                                     _viewState.postValue(viewState)
                                     if (viewState != RecyclerGifViewState.Error.NetworkError)
-                                        createListOfGifModels((viewState as RecyclerGifViewState.Loaded).gifs.gifs!!)
+                                        createListOfGifModels((viewState as RecyclerGifViewState.Loaded).gifsResponse.gifResponses!!)
                                     else {
                                         setError(ErrorHandler.LOAD_ERROR)
                                     }
@@ -87,7 +87,7 @@ class RecyclerFragmentViewModel @Inject constructor(private val gifRepository: G
             }
             "top" -> {
                 response = currentPage.value?.let {
-                    gifRepository.getTopGifs(it, 10, "gif")
+                    gifRepository.getTopGifs(it, 10, "gifResponse")
                         .subscribeOn(Schedulers.io())
                         .observeOn(Schedulers.io())
                         .subscribe(
@@ -95,7 +95,7 @@ class RecyclerFragmentViewModel @Inject constructor(private val gifRepository: G
                                 run {
                                     _viewState.postValue(viewState)
                                     if (viewState != RecyclerGifViewState.Error.NetworkError)
-                                        createListOfGifModels((viewState as RecyclerGifViewState.Loaded).gifs.gifs!!)
+                                        createListOfGifModels((viewState as RecyclerGifViewState.Loaded).gifsResponse.gifResponses!!)
                                     else {
                                         setError(ErrorHandler.LOAD_ERROR)
                                     }
@@ -130,9 +130,9 @@ class RecyclerFragmentViewModel @Inject constructor(private val gifRepository: G
         this.currentPage.value = currentPage + pageOperation.pos
     }
 
-    private fun createListOfGifModels(gifs: ArrayList<Gif>) {
+    private fun createListOfGifModels(gifResponses: ArrayList<GifResponse>) {
         val result: ArrayList<GifModel> = ArrayList<GifModel>()
-        for (gif in gifs) result.add(gif.createGifModel())
+        for (gif in gifResponses) result.add(gif.createGifModel())
         setGifModels(result)
     }
 

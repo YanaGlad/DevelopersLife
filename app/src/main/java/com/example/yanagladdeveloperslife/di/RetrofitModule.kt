@@ -1,6 +1,6 @@
 package com.example.yanagladdeveloperslife.di
 
-import com.example.yanagladdeveloperslife.api.Api
+import com.example.yanagladdeveloperslife.network.Api
 import dagger.Module
 import dagger.Provides
 import dagger.Reusable

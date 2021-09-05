@@ -1,8 +1,9 @@
-package com.example.yanagladdeveloperslife.models
+package com.example.yanagladdeveloperslife.models.response
 
+import com.example.yanagladdeveloperslife.models.GifModel
 import com.google.gson.annotations.SerializedName
 
-data class Gif(
+data class GifResponse(
     @field:SerializedName("id") val id: Int?,
     @field:SerializedName("description") val description: String?,
     @field:SerializedName("votes") val votes: Int?,

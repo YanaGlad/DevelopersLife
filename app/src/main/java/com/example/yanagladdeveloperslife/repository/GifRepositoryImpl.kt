@@ -1,6 +1,6 @@
 package com.example.yanagladdeveloperslife.repository
 
-import com.example.yanagladdeveloperslife.api.RemoteDataProvider
+import com.example.yanagladdeveloperslife.network.RemoteDataProvider
 import com.example.yanagladdeveloperslife.db.LocalFavouritesDataProvider
 import com.example.yanagladdeveloperslife.models.GifModel
 import com.example.yanagladdeveloperslife.viewstate.RandomGifViewState

@@ -1,7 +1,7 @@
 package com.example.yanagladdeveloperslife.di
 
-import com.example.yanagladdeveloperslife.api.RemoteDataProvider
-import com.example.yanagladdeveloperslife.api.RemoteDataProviderImpl
+import com.example.yanagladdeveloperslife.network.RemoteDataProvider
+import com.example.yanagladdeveloperslife.network.RemoteDataProviderImpl
 import dagger.Binds
 import dagger.Module
 import dagger.Reusable

@@ -1,12 +1,12 @@
 package com.example.yanagladdeveloperslife.fragments
 
 import android.content.res.AssetManager
-import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
@@ -15,7 +15,6 @@ import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.load.resource.gif.GifDrawable
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
-import com.example.yanagladdeveloperslife.MainActivity
 import com.example.yanagladdeveloperslife.R
 import com.example.yanagladdeveloperslife.databinding.FragmentRandomBinding
 import com.example.yanagladdeveloperslife.models.GifModel
@@ -27,7 +26,7 @@ import io.reactivex.Observable
 import io.reactivex.schedulers.Schedulers
 
 @AndroidEntryPoint
-class RandomFragment : ButtonSupportedFragment() {
+class RandomFragment : Fragment(), Clickable {
     var isOnScreen = false
 
     private var _binding: FragmentRandomBinding? = null
@@ -43,23 +42,14 @@ class RandomFragment : ButtonSupportedFragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentRandomBinding.inflate(layoutInflater)
+        return binding.root
+    }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         setupButtonListeners()
         setupObservers()
-
         randomFragmentViewModel.loadRandomGif()
-
-//        var gif : GifModel?=null
-//        Observable.just(randomFragmentViewModel)
-//            .subscribeOn(Schedulers.io())
-//            .subscribe { db ->
-//                gif = db.getGifById(randomFragmentViewModel.getCurrentGif().value!!)
-//
-//            }
-
-
-
-        return binding.root
     }
 
     private fun setupObservers() {
@@ -128,7 +118,7 @@ class RandomFragment : ButtonSupportedFragment() {
         val onPrevClickListener = View.OnClickListener {
             if (!randomFragmentViewModel.goBack()) Log.e(
                 "Cache is empty",
-                "No cached gifs"
+                "No cached gifResponses"
             ) else loadGifWithGlide(randomFragmentViewModel.getCurrentGif().value?.gifURL)
 
             try {
@@ -152,7 +142,7 @@ class RandomFragment : ButtonSupportedFragment() {
     }
 
     private fun onGifLoaded(viewState: RandomGifViewState.Loaded) {
-        randomFragmentViewModel.addGifModel(viewState.gif.createGifModel())
+        randomFragmentViewModel.addGifModel(viewState.gifResponse.createGifModel())
         loadGifWithGlide(randomFragmentViewModel.getCurrentGif().value?.gifURL)
         binding.recyclErrorBtn.visibility = View.GONE
         binding.recycleErrorProgressbar.visibility = View.GONE
