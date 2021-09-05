@@ -13,5 +13,5 @@ interface GifRepository {
     fun addGifToFavourites(gifModel: GifModel)
     fun getFavourites() : Flowable<List<GifModel>>
     fun getFavById(gifModel: GifModel) : Single<GifModel>
-
+    fun deleteFavourite(item : GifModel)
 }

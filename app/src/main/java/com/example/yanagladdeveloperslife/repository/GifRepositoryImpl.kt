@@ -95,5 +95,9 @@ class GifRepositoryImpl @Inject constructor(
     override fun getFavById(gifModel: GifModel): Single<GifModel> =
         localDataProvider.getGifByDescription(gifModel.id.toLong())
 
+    override fun deleteFavourite(item: GifModel) {
+        localDataProvider.deleteFavourite(item)
+    }
+
 
 }

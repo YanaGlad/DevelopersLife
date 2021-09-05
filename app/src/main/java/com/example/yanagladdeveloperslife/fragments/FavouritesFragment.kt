@@ -12,6 +12,8 @@ import com.example.yanagladdeveloperslife.databinding.FragmentFavouritesBinding
 import com.example.yanagladdeveloperslife.models.GifModel
 import com.example.yanagladdeveloperslife.viewmodel.FavouritesFragmentViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import io.reactivex.Observable
+import io.reactivex.schedulers.Schedulers
 
 @AndroidEntryPoint
 class FavouritesFragment : Fragment(), FavouriteHelper {
@@ -49,18 +51,20 @@ class FavouritesFragment : Fragment(), FavouriteHelper {
         favouritesFragmentViewModel.favsList.observe(viewLifecycleOwner) {
             gifsRecyclerAdapter?.submitList(favouritesFragmentViewModel.favsList.value)
             binding.recyclerview.adapter = gifsRecyclerAdapter
-
         }
     }
 
     companion object {
-
         fun newInstance(): FavouritesFragment {
             return FavouritesFragment()
         }
     }
 
     override fun addToFavs(gifModel: GifModel) {
-         //TODO remove from db
+        val disposable = Observable.just(favouritesFragmentViewModel)
+            .subscribeOn(Schedulers.io())
+            .subscribe { db ->
+                db.deleteGifFromFavs(gifModel)
+            }
     }
 }

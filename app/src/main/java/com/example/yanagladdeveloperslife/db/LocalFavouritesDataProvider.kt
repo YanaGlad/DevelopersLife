@@ -1,5 +1,6 @@
 package com.example.yanagladdeveloperslife.db
 
+import androidx.room.Delete
 import androidx.room.Query
 import com.example.yanagladdeveloperslife.db.enitity.GifEntity
 import com.example.yanagladdeveloperslife.models.GifModel
