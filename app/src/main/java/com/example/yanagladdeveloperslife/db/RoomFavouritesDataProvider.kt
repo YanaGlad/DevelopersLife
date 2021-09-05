@@ -33,13 +33,6 @@ class RoomFavouritesDataProvider @Inject constructor(val dao: GifDao) :
 
 
     override fun getAllFavourites(): Flowable<List<GifModel>> {
-//        dao.getAllFavourites().doOnNext { gifs ->
-//            gifs.map {
-//                gif ->
-//                println(" GIF ${gif.description}")
-//            }
-//        }.subscribe()
-
         return dao.getAllFavourites()
             .map { gifs ->
                 gifs.map { item ->

@@ -2,6 +2,8 @@ package com.example.yanagladdeveloperslife.adapters
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.graphics.Color
+import android.graphics.ColorFilter
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -31,7 +33,7 @@ import io.reactivex.Observable
 import io.reactivex.schedulers.Schedulers
 
 
-class GifsRecyclerAdapter(val helper : FavouriteHelper, _type: String) :
+class GifsRecyclerAdapter(val helper: FavouriteHelper, _type: String) :
     ListAdapter<GifModel, GifsRecyclerAdapter.ViewHolder>(DiffCallback()) {
 
     private val type: String = _type
@@ -72,7 +74,11 @@ class GifsRecyclerAdapter(val helper : FavouriteHelper, _type: String) :
         return position
     }
 
-    class ViewHolder(private val binding: LoadItemBinding, val type: String, val helper: FavouriteHelper) :
+    class ViewHolder(
+        private val binding: LoadItemBinding,
+        val type: String,
+        val helper: FavouriteHelper
+    ) :
         RecyclerView.ViewHolder(binding.root) {
         val context: Context = binding.root.context
         private var viewModel: GifViewModel? = null
@@ -124,13 +130,16 @@ class GifsRecyclerAdapter(val helper : FavouriteHelper, _type: String) :
             binding.loadAuthor.text = context.getString(R.string.by) + " " + gifModel.author
             binding.loadDescription.text = gifModel.description
 
+            for (item in helper.getAllFavs()) {
+                if (item.description == gifModel.description) {
+                    binding.favsButton.setColorFilter(Color.RED)
+                    break
+                }
+            }
+
             binding.favsButton.setOnClickListener {
                 helper.addToFavs(gifModel)
-//                Observable.just(gifViewModel)
-//                    .subscribeOn(Schedulers.io())
-//                    .subscribe { db ->
-//                        db.addGifToDb(gifModel)
-//                    }
+                binding.favsButton.setColorFilter(Color.RED)
             }
 
         }

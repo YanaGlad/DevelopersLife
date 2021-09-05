@@ -57,9 +57,7 @@ class RandomFragment : ButtonSupportedFragment() {
 //
 //            }
 
-      //  if(gif!=null){
-            binding.favsButton.setColorFilter(Color.RED)
-     //   }
+
 
         return binding.root
     }

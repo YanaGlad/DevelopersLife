@@ -1,5 +1,6 @@
 package com.example.yanagladdeveloperslife.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.yanagladdeveloperslife.models.Gif
@@ -21,11 +22,33 @@ class RecyclerFragmentViewModel @Inject constructor(private val gifRepository: G
     val currentPage = MutableLiveData(0)
         get() = field
 
-    var error: MutableLiveData<ErrorHandler> = MutableLiveData<ErrorHandler>(ErrorHandler.currentError)
+    var error: MutableLiveData<ErrorHandler> =
+        MutableLiveData<ErrorHandler>(ErrorHandler.currentError)
 
     private val _viewState: MutableLiveData<RecyclerGifViewState> = MutableLiveData()
     val viewState: LiveData<RecyclerGifViewState>
         get() = _viewState
+
+    val favsList: MutableLiveData<List<GifModel>> = MutableLiveData<List<GifModel>>()
+
+    init {
+        favsList.value = arrayListOf()
+        loadGifsFromDb()
+    }
+
+    fun deleteGifFromFavs(gifModel: GifModel){
+        gifRepository.deleteFavourite(gifModel)
+    }
+
+    fun loadGifsFromDb() {
+        val disp =  gifRepository.getFavourites()
+            .subscribeOn(Schedulers.io())
+            .observeOn(Schedulers.io())
+            .subscribe {
+                Log.d("TAG_LIST", " Is... ${it[0].author}")
+                favsList.postValue(it)
+            }
+    }
 
     fun addGifToDb(gifModel: GifModel) {
         gifRepository.addGifToFavourites(gifModel)
@@ -115,6 +138,17 @@ class RecyclerFragmentViewModel @Inject constructor(private val gifRepository: G
 
     fun getGifModels(): MutableLiveData<ArrayList<GifModel>?> {
         return gifModels
+    }
+
+    fun getAllFavs(): List<GifModel> {
+        var list : List<GifModel>  = arrayListOf()
+        val disposable = gifRepository.getFavourites()
+            .subscribeOn(Schedulers.io())
+            .observeOn(Schedulers.computation())
+            .map {
+                list = it
+            }
+           return list
     }
 
     private fun setGifModels(gifModels: ArrayList<GifModel>) {

@@ -11,6 +11,7 @@ import com.example.yanagladdeveloperslife.adapters.GifsRecyclerAdapter
 import com.example.yanagladdeveloperslife.databinding.FragmentFavouritesBinding
 import com.example.yanagladdeveloperslife.models.GifModel
 import com.example.yanagladdeveloperslife.viewmodel.FavouritesFragmentViewModel
+import com.example.yanagladdeveloperslife.viewmodel.RecyclerFragmentViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import io.reactivex.Observable
 import io.reactivex.schedulers.Schedulers
@@ -21,7 +22,7 @@ class FavouritesFragment : Fragment(), FavouriteHelper {
     private var _binding: FragmentFavouritesBinding? = null
     private val binding get() = _binding!!
     private var gifsRecyclerAdapter: GifsRecyclerAdapter? = null
-    private val favouritesFragmentViewModel: FavouritesFragmentViewModel by viewModels()
+    private val favouritesFragmentViewModel: RecyclerFragmentViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -52,6 +53,7 @@ class FavouritesFragment : Fragment(), FavouriteHelper {
             gifsRecyclerAdapter?.submitList(favouritesFragmentViewModel.favsList.value)
             binding.recyclerview.adapter = gifsRecyclerAdapter
         }
+
     }
 
     companion object {
@@ -66,5 +68,9 @@ class FavouritesFragment : Fragment(), FavouriteHelper {
             .subscribe { db ->
                 db.deleteGifFromFavs(gifModel)
             }
+    }
+
+    override fun getAllFavs(): List<GifModel> {
+        return favouritesFragmentViewModel.favsList.value!!
     }
 }

@@ -20,8 +20,9 @@ import dagger.hilt.android.AndroidEntryPoint
 import io.reactivex.Observable
 import io.reactivex.schedulers.Schedulers
 
-interface FavouriteHelper{
+interface FavouriteHelper {
     fun addToFavs(gifModel: GifModel)
+    fun getAllFavs(): List<GifModel>
 }
 
 @AndroidEntryPoint
@@ -95,7 +96,7 @@ class RecyclerFragment : ButtonSupportedFragment(), FavouriteHelper {
                 )
             }
         }
-       val onPrevClickListener = View.OnClickListener {
+        val onPrevClickListener = View.OnClickListener {
             type?.let { type ->
                 loadGifs(
                     PageOperation.PREVIOUS,
@@ -138,11 +139,17 @@ class RecyclerFragment : ButtonSupportedFragment(), FavouriteHelper {
             }
         }
         recyclerFragmentViewModel.getCanLoadNext().observe(viewLifecycleOwner) { enabled ->
-            if (isOnScreen)  binding.buttonsLayout.btnNext.isEnabled = enabled
+            if (isOnScreen) binding.buttonsLayout.btnNext.isEnabled = enabled
         }
         recyclerFragmentViewModel.getCanLoadPrevious().observe(viewLifecycleOwner) { enabled ->
-            if (isOnScreen)  binding.buttonsLayout.btnPrevious.isEnabled = enabled
+            if (isOnScreen) binding.buttonsLayout.btnPrevious.isEnabled = enabled
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        Log.d("TAG_RESUME", "HEREEEE")
+        gifsRecyclerAdapter?.submitList(recyclerFragmentViewModel.getGifModels().value!!)
     }
 
     override fun nextEnabled(): Boolean {
@@ -170,5 +177,9 @@ class RecyclerFragment : ButtonSupportedFragment(), FavouriteHelper {
             .subscribe { db ->
                 db.addGifToDb(gifModel)
             }
+    }
+
+    override fun getAllFavs(): List<GifModel> {
+        return recyclerFragmentViewModel.favsList.value!!
     }
 }
