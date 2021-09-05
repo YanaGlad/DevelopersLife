@@ -3,11 +3,11 @@ package com.example.yanagladdeveloperslife.viewmodel
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.example.yanagladdeveloperslife.ErrorHandler
+import com.example.yanagladdeveloperslife.PageOperation
 import com.example.yanagladdeveloperslife.models.response.GifResponse
 import com.example.yanagladdeveloperslife.models.GifModel
 import com.example.yanagladdeveloperslife.repository.GifRepository
-import com.example.yanagladdeveloperslife.values.ErrorHandler
-import com.example.yanagladdeveloperslife.values.PageOperation
 import com.example.yanagladdeveloperslife.viewstate.RecyclerGifViewState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.reactivex.disposables.Disposable
@@ -17,7 +17,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class RecyclerFragmentViewModel @Inject constructor(private val gifRepository: GifRepository) :
-    PageViewModel() {
+    ButtonsViewModel() {
     val type = MutableLiveData<String?>(null)
     val currentPage = MutableLiveData(0)
         get() = field
@@ -39,12 +39,12 @@ class RecyclerFragmentViewModel @Inject constructor(private val gifRepository: G
         loadGifsFromDb()
     }
 
-    fun deleteGifFromFavs(gifModel: GifModel){
+    fun deleteGifFromFavs(gifModel: GifModel) {
         gifRepository.deleteFavourite(gifModel)
     }
 
     fun loadGifsFromDb() {
-        val disp =  gifRepository.getFavourites()
+        val disp = gifRepository.getFavourites()
             .subscribeOn(Schedulers.io())
             .observeOn(Schedulers.io())
             .subscribe {
@@ -116,10 +116,12 @@ class RecyclerFragmentViewModel @Inject constructor(private val gifRepository: G
     }
 
     fun updateCanLoadPrevious() {
-        super.setCanLoadPrevious(
-            currentPage.value!! > 0 &&
-                    error.getValue() == ErrorHandler.SUCCESS
-        )
+        super.canLoadPrevious =
+            MutableLiveData(
+                currentPage.value!! > 0 &&
+                        error.getValue() == ErrorHandler.SUCCESS
+            )
+
     }
 
     fun setType(type: String?) {
@@ -141,14 +143,14 @@ class RecyclerFragmentViewModel @Inject constructor(private val gifRepository: G
     }
 
     fun getAllFavs(): List<GifModel> {
-        var list : List<GifModel>  = arrayListOf()
+        var list: List<GifModel> = arrayListOf()
         val disposable = gifRepository.getFavourites()
             .subscribeOn(Schedulers.io())
             .observeOn(Schedulers.computation())
             .map {
                 list = it
             }
-           return list
+        return list
     }
 
     private fun setGifModels(gifModels: ArrayList<GifModel>) {

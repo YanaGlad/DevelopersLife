@@ -3,9 +3,9 @@ package com.example.yanagladdeveloperslife.viewmodel
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.example.yanagladdeveloperslife.ErrorHandler
 import com.example.yanagladdeveloperslife.models.GifModel
 import com.example.yanagladdeveloperslife.repository.GifRepository
-import com.example.yanagladdeveloperslife.values.ErrorHandler
 import com.example.yanagladdeveloperslife.viewstate.RandomGifViewState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.reactivex.schedulers.Schedulers
@@ -14,7 +14,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class RandomFragmentViewModel @Inject constructor(private val gifRepository: GifRepository) :
-    PageViewModel() {
+    ButtonsViewModel() {
     private val isCurrentGifLoaded = MutableLiveData(false)
     private val currentGif: MutableLiveData<GifModel?> = MutableLiveData(null)
     private val error: MutableLiveData<ErrorHandler> =
@@ -67,7 +67,7 @@ class RandomFragmentViewModel @Inject constructor(private val gifRepository: Gif
     fun updateCanLoadPrevious() {
         val hasErrors: Boolean = !(error.value == ErrorHandler.SUCCESS)
         Log.d("CAN_LOAD_PREV", "Pos  ${(pos - 1)}  noerrors ${!hasErrors} and final.. ${!hasErrors && pos - 1 >= 0}")
-        super.setCanLoadPrevious(!hasErrors && pos - 1 >= 0)
+        super.canLoadPrevious = MutableLiveData(!hasErrors && pos - 1 >= 0)
     }
 
     fun getCurrentGif(): LiveData<GifModel?> {

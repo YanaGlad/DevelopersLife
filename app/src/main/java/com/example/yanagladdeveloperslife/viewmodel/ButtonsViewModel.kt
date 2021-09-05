@@ -1,20 +1,19 @@
 package com.example.yanagladdeveloperslife.viewmodel
 
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.yanagladdeveloperslife.ErrorHandler
 
-class GifViewModel : ViewModel() {
-    var isCurrentGifLoaded = MutableLiveData(false)
+open class ButtonsViewModel : ViewModel() {
+    var canLoadPrevious = MutableLiveData(false)
         get() = field
         set(value) {
             field.value = value.value
         }
 
-    var error: MutableLiveData<ErrorHandler> =
-        MutableLiveData<ErrorHandler>(ErrorHandler.currentError)
+    var canLoadNext = MutableLiveData(false)
+        get() = field
         set(value) {
             field.value = value.value
         }
-
 }

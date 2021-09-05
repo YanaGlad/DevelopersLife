@@ -7,14 +7,14 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.MutableLiveData
 import androidx.recyclerview.widget.GridLayoutManager
-import com.example.yanagladdeveloperslife.MainActivity
+import com.example.yanagladdeveloperslife.ErrorHandler
+import com.example.yanagladdeveloperslife.PageOperation
 import com.example.yanagladdeveloperslife.R
 import com.example.yanagladdeveloperslife.adapters.GifsRecyclerAdapter
 import com.example.yanagladdeveloperslife.databinding.FragmentRecycleBinding
 import com.example.yanagladdeveloperslife.models.GifModel
-import com.example.yanagladdeveloperslife.values.ErrorHandler
-import com.example.yanagladdeveloperslife.values.PageOperation
 import com.example.yanagladdeveloperslife.viewmodel.RecyclerFragmentViewModel
 
 import dagger.hilt.android.AndroidEntryPoint
@@ -51,7 +51,7 @@ class RecyclerFragment : Fragment(), FavouriteHelper, Clickable {
 
 
     private fun loadGifs(pageOperation: PageOperation?, type: String) {
-        recyclerFragmentViewModel.setCanLoadNext(recyclerFragmentViewModel.error.value == ErrorHandler.SUCCESS)
+        recyclerFragmentViewModel.canLoadNext = MutableLiveData(recyclerFragmentViewModel.error.value == ErrorHandler.SUCCESS)
         recyclerFragmentViewModel.currentPage.value?.let {
             if (pageOperation != null) {
                 recyclerFragmentViewModel.setCurrentPage(
@@ -119,7 +119,7 @@ class RecyclerFragment : Fragment(), FavouriteHelper, Clickable {
         }
         recyclerFragmentViewModel.error.observe(viewLifecycleOwner) { e ->
             recyclerFragmentViewModel.updateCanLoadPrevious()
-            recyclerFragmentViewModel.setCanLoadNext(true)
+            recyclerFragmentViewModel.canLoadNext = MutableLiveData(true)
             binding.recycleErrorProgressbar.visibility = View.INVISIBLE
             if (e != ErrorHandler.SUCCESS) {
                 binding.recyclerview.visibility = View.GONE
@@ -139,10 +139,10 @@ class RecyclerFragment : Fragment(), FavouriteHelper, Clickable {
                 binding.recyclerview.visibility = View.VISIBLE
             }
         }
-        recyclerFragmentViewModel.getCanLoadNext().observe(viewLifecycleOwner) { enabled ->
+        recyclerFragmentViewModel.canLoadNext.observe(viewLifecycleOwner) { enabled ->
             if (isOnScreen) binding.buttonsLayout.btnNext.isEnabled = enabled
         }
-        recyclerFragmentViewModel.getCanLoadPrevious().observe(viewLifecycleOwner) { enabled ->
+        recyclerFragmentViewModel.canLoadPrevious.observe(viewLifecycleOwner) { enabled ->
             if (isOnScreen) binding.buttonsLayout.btnPrevious.isEnabled = enabled
         }
     }
@@ -154,11 +154,11 @@ class RecyclerFragment : Fragment(), FavouriteHelper, Clickable {
     }
 
     override fun nextEnabled(): Boolean {
-        return recyclerFragmentViewModel.getCanLoadNext().value == true
+        return recyclerFragmentViewModel.canLoadNext.value == true
     }
 
     override fun previousEnabled(): Boolean {
-        return recyclerFragmentViewModel.getCanLoadPrevious().value!!
+        return recyclerFragmentViewModel.canLoadPrevious.value!!
     }
 
     companion object {

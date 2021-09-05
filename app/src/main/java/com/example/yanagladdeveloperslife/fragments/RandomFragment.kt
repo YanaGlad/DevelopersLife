@@ -1,6 +1,7 @@
 package com.example.yanagladdeveloperslife.fragments
 
 import android.content.res.AssetManager
+import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -8,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.MutableLiveData
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.DiskCacheStrategy
@@ -15,10 +17,10 @@ import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.load.resource.gif.GifDrawable
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
+import com.example.yanagladdeveloperslife.ErrorHandler
 import com.example.yanagladdeveloperslife.R
 import com.example.yanagladdeveloperslife.databinding.FragmentRandomBinding
 import com.example.yanagladdeveloperslife.models.GifModel
-import com.example.yanagladdeveloperslife.values.ErrorHandler
 import com.example.yanagladdeveloperslife.viewmodel.RandomFragmentViewModel
 import com.example.yanagladdeveloperslife.viewstate.RandomGifViewState
 import dagger.hilt.android.AndroidEntryPoint
@@ -68,11 +70,11 @@ class RandomFragment : Fragment(), Clickable {
                 View.INVISIBLE else binding.loadProgressbar.visibility =
                 View.VISIBLE
         }
-        randomFragmentViewModel.getCanLoadNext().observe(viewLifecycleOwner) { enabled: Boolean? ->
+        randomFragmentViewModel.canLoadNext.observe(viewLifecycleOwner) { enabled: Boolean? ->
             if (isOnScreen) binding.buttonsLayout.btnNext.isEnabled = enabled!!
         }
 
-        randomFragmentViewModel.getCanLoadPrevious().observe(viewLifecycleOwner) { enabled ->
+        randomFragmentViewModel.canLoadPrevious.observe(viewLifecycleOwner) { enabled ->
             if (isOnScreen) binding.buttonsLayout.btnPrevious.isEnabled = enabled
         }
 
@@ -84,13 +86,13 @@ class RandomFragment : Fragment(), Clickable {
                 when (e) {
                     ErrorHandler.LOAD_ERROR -> {
                         binding.recyclErrorBtn.visibility = View.VISIBLE
-                        randomFragmentViewModel.setCanLoadNext(false)
+                        randomFragmentViewModel.canLoadNext = MutableLiveData(false)
                         binding.loadImage.setBackgroundResource(R.drawable.waiting_background)
                     }
                     ErrorHandler.IMAGE_ERROR -> {
                         binding.recyclErrorBtn.visibility = View.VISIBLE
                         setupErrorParams(requireContext().assets)
-                        randomFragmentViewModel.setCanLoadNext(false)
+                        randomFragmentViewModel.canLoadNext = MutableLiveData(false)
                         binding.loadImage.setBackgroundResource(R.drawable.waiting_background)
                     }
                     else -> {
@@ -137,7 +139,7 @@ class RandomFragment : Fragment(), Clickable {
                 .subscribe { db ->
                     db.addGifToDb(randomFragmentViewModel.getCurrentGif().value!!)
                 }
-
+            binding.favsButton.setColorFilter(Color.RED)
         }
     }
 
@@ -174,7 +176,7 @@ class RandomFragment : Fragment(), Clickable {
 
     private fun loadGifWithGlide(url: String?) {
         randomFragmentViewModel.setIsCurrentGifLoaded(false)
-        randomFragmentViewModel.setCanLoadNext(false)
+        randomFragmentViewModel.canLoadNext = MutableLiveData(false)
         Glide.with(requireActivity())
             .asGif()
             .load(url)
@@ -205,7 +207,7 @@ class RandomFragment : Fragment(), Clickable {
                         randomFragmentViewModel.setAppError(ErrorHandler.SUCCESS)
                     }
                     randomFragmentViewModel.setIsCurrentGifLoaded(true)
-                    randomFragmentViewModel.setCanLoadNext(true)
+                    randomFragmentViewModel.canLoadNext = MutableLiveData(true)
                     return false
                 }
             })
@@ -220,7 +222,7 @@ class RandomFragment : Fragment(), Clickable {
 
     private fun loadGif() {
         if (!randomFragmentViewModel.goNext()) {
-            randomFragmentViewModel.setCanLoadNext(false)
+            randomFragmentViewModel.canLoadNext = MutableLiveData(false)
 
             randomFragmentViewModel.loadRandomGif()
             loadGifWithGlide(randomFragmentViewModel.getCurrentGif().value?.gifURL)
@@ -231,11 +233,11 @@ class RandomFragment : Fragment(), Clickable {
     }
 
     override fun nextEnabled(): Boolean {
-        return randomFragmentViewModel.getCanLoadNext().value!!
+        return randomFragmentViewModel.canLoadNext.value!!
     }
 
     override fun previousEnabled(): Boolean {
-        return randomFragmentViewModel.getCanLoadPrevious().value!!
+        return randomFragmentViewModel.canLoadPrevious.value!!
     }
 
 

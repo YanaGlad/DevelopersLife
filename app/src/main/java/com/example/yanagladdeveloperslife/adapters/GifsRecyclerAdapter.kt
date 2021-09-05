@@ -3,11 +3,11 @@ package com.example.yanagladdeveloperslife.adapters
 import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Color
-import android.graphics.ColorFilter
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelStoreOwner
 import androidx.recyclerview.widget.DiffUtil
@@ -20,17 +20,14 @@ import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.load.resource.gif.GifDrawable
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
+import com.example.yanagladdeveloperslife.ErrorHandler
 import com.example.yanagladdeveloperslife.R
 import com.example.yanagladdeveloperslife.databinding.LoadItemBinding
 import com.example.yanagladdeveloperslife.fragments.FavouriteHelper
 import com.example.yanagladdeveloperslife.models.GifModel
-import com.example.yanagladdeveloperslife.values.ErrorHandler
 import com.example.yanagladdeveloperslife.viewmodel.GifViewModel
-import dagger.hilt.android.AndroidEntryPoint
 
 import dagger.hilt.android.internal.managers.ViewComponentManager
-import io.reactivex.Observable
-import io.reactivex.schedulers.Schedulers
 
 
 class GifsRecyclerAdapter(val helper: FavouriteHelper, _type: String) :
@@ -91,7 +88,7 @@ class GifsRecyclerAdapter(val helper: FavouriteHelper, _type: String) :
                     target: Target<GifDrawable?>,
                     isFirstResource: Boolean
                 ): Boolean {
-                    viewModel!!.setError(ErrorHandler.IMAGE_ERROR)
+                    viewModel!!.error = MutableLiveData(ErrorHandler.IMAGE_ERROR)
                     return false
                 }
 
@@ -103,10 +100,10 @@ class GifsRecyclerAdapter(val helper: FavouriteHelper, _type: String) :
                     isFirstResource: Boolean
                 ): Boolean {
                     if (viewModel != null) {
-                        viewModel!!.setIsGifLoaded(true)
-                        viewModel!!.setError(ErrorHandler.IMAGE_ERROR)
+                        viewModel!!.isCurrentGifLoaded = MutableLiveData(true)
+                        viewModel!!.error = MutableLiveData(ErrorHandler.SUCCESS)
                     } else {
-                        viewModel!!.setError(ErrorHandler.IMAGE_ERROR)
+                        viewModel!!.error = MutableLiveData(ErrorHandler.IMAGE_ERROR)
                     }
                     return false
                 }
@@ -146,7 +143,7 @@ class GifsRecyclerAdapter(val helper: FavouriteHelper, _type: String) :
 
         private fun setViewModel(viewModel: GifViewModel) {
             this.viewModel = viewModel
-            viewModel.getIsCurrentGifLoaded()
+            viewModel.isCurrentGifLoaded
                 .observe(activityContext() as LifecycleOwner) { isLoaded ->
                     if (isLoaded) binding.loadProgressbar.visibility =
                         View.GONE else binding.loadProgressbar.visibility =
@@ -168,7 +165,7 @@ class GifsRecyclerAdapter(val helper: FavouriteHelper, _type: String) :
         }
 
         private fun prepareForLoading() {
-            if (viewModel != null) viewModel!!.setIsGifLoaded(false)
+            if (viewModel != null) viewModel!!.isCurrentGifLoaded = MutableLiveData(false)
             binding.loadImage.setImageResource(R.color.disabled_btn)
         }
 
