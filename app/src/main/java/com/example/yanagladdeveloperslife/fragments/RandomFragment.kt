@@ -92,11 +92,16 @@ class RandomFragment : ButtonSupportedFragment() {
             if (e != ErrorHandler.SUCCESS) {
                 binding.loadLinearLayout.visibility = View.GONE
                 when (e) {
-                    ErrorHandler.LOAD_ERROR -> binding.recyclErrorBtn.visibility = View.VISIBLE
+                    ErrorHandler.LOAD_ERROR -> {
+                        binding.recyclErrorBtn.visibility = View.VISIBLE
+                        randomFragmentViewModel.setCanLoadNext(false)
+                        binding.loadImage.setBackgroundResource(R.drawable.waiting_background)
+                    }
                     ErrorHandler.IMAGE_ERROR -> {
                         binding.recyclErrorBtn.visibility = View.VISIBLE
                         setupErrorParams(requireContext().assets)
                         randomFragmentViewModel.setCanLoadNext(false)
+                        binding.loadImage.setBackgroundResource(R.drawable.waiting_background)
                     }
                     else -> {
                     }
@@ -104,10 +109,8 @@ class RandomFragment : ButtonSupportedFragment() {
                 binding.recyclErrorBtn.setOnClickListener {
                     if (binding.recycleErrorProgressbar.visibility == View.INVISIBLE) {
                         binding.recycleErrorProgressbar.visibility = View.VISIBLE
-                        if (e == ErrorHandler.IMAGE_ERROR) {
-                            loadGifWithGlide(savedUrl)
-                        }
-                    }
+                        randomFragmentViewModel.loadRandomGif()
+                     }
                 }
             } else {
                 binding.recyclErrorBtn.visibility = View.GONE
@@ -151,6 +154,10 @@ class RandomFragment : ButtonSupportedFragment() {
     private fun onGifLoaded(viewState: RandomGifViewState.Loaded) {
         randomFragmentViewModel.addGifModel(viewState.gif.createGifModel())
         loadGifWithGlide(randomFragmentViewModel.getCurrentGif().value?.gifURL)
+        binding.recyclErrorBtn.visibility = View.GONE
+        binding.recycleErrorProgressbar.visibility = View.GONE
+        binding.loadLinearLayout.visibility = View.VISIBLE
+        randomFragmentViewModel.setAppError(ErrorHandler.SUCCESS)
     }
 
     private fun handleViewState(viewState: RandomGifViewState?) {

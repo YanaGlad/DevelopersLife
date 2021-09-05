@@ -30,9 +30,12 @@ class RecyclerFragmentViewModel @Inject constructor(private val gifRepository: G
         get() = _viewState
 
     val favsList: MutableLiveData<List<GifModel>> = MutableLiveData<List<GifModel>>()
+    private val gifModels: MutableLiveData<ArrayList<GifModel>?> =
+        MutableLiveData<ArrayList<GifModel>?>(null)
 
     init {
         favsList.value = arrayListOf()
+        gifModels.value = arrayListOf()
         loadGifsFromDb()
     }
 
@@ -111,9 +114,6 @@ class RecyclerFragmentViewModel @Inject constructor(private val gifRepository: G
     fun setError(error: ErrorHandler?) {
         this.error.postValue(error)
     }
-
-    private val gifModels: MutableLiveData<ArrayList<GifModel>?> =
-        MutableLiveData<ArrayList<GifModel>?>(null)
 
     fun updateCanLoadPrevious() {
         super.setCanLoadPrevious(

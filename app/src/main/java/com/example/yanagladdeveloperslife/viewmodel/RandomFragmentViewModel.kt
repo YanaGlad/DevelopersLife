@@ -66,7 +66,7 @@ class RandomFragmentViewModel @Inject constructor(private val gifRepository: Gif
 
     fun updateCanLoadPrevious() {
         val hasErrors: Boolean = !(error.value == ErrorHandler.SUCCESS)
-        Log.d("CAN LOAD PREV", "Pos  ${(pos - 1)}  noerrors ${!hasErrors}")
+        Log.d("CAN_LOAD_PREV", "Pos  ${(pos - 1)}  noerrors ${!hasErrors} and final.. ${!hasErrors && pos - 1 >= 0}")
         super.setCanLoadPrevious(!hasErrors && pos - 1 >= 0)
     }
 
@@ -78,7 +78,6 @@ class RandomFragmentViewModel @Inject constructor(private val gifRepository: Gif
         gifRepository.getRandomGif()
             .subscribeOn(Schedulers.io())
             .observeOn(Schedulers.io())
-
             .subscribe(
                 { viewState ->
                     _viewState.postValue(viewState)
