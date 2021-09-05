@@ -9,11 +9,12 @@ import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.yanagladdeveloperslife.adapters.GifsRecyclerAdapter
 import com.example.yanagladdeveloperslife.databinding.FragmentFavouritesBinding
+import com.example.yanagladdeveloperslife.models.GifModel
 import com.example.yanagladdeveloperslife.viewmodel.FavouritesFragmentViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class FavouritesFragment : Fragment() {
+class FavouritesFragment : Fragment(), FavouriteHelper {
     var isOnScreen = false
     private var _binding: FragmentFavouritesBinding? = null
     private val binding get() = _binding!!
@@ -37,7 +38,7 @@ class FavouritesFragment : Fragment() {
         binding.recyclerview.setHasFixedSize(true)
         binding.recyclerview.layoutManager = GridLayoutManager(context, 1)
         gifsRecyclerAdapter = GifsRecyclerAdapter(
-            "favs"
+            this, "favs"
         )
     }
 
@@ -57,5 +58,9 @@ class FavouritesFragment : Fragment() {
         fun newInstance(): FavouritesFragment {
             return FavouritesFragment()
         }
+    }
+
+    override fun addToFavs(gifModel: GifModel) {
+         //TODO remove from db
     }
 }

@@ -27,6 +27,9 @@ class RecyclerFragmentViewModel @Inject constructor(private val gifRepository: G
     val viewState: LiveData<RecyclerGifViewState>
         get() = _viewState
 
+    fun addGifToDb(gifModel: GifModel) {
+        gifRepository.addGifToFavourites(gifModel)
+    }
 
     fun loadRecyclerGifs(type: String) {
         var response: Disposable? = null

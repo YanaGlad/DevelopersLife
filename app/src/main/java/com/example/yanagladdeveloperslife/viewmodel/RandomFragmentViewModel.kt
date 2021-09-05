@@ -6,12 +6,8 @@ import androidx.lifecycle.MutableLiveData
 import com.example.yanagladdeveloperslife.models.GifModel
 import com.example.yanagladdeveloperslife.repository.GifRepository
 import com.example.yanagladdeveloperslife.values.ErrorHandler
-
 import com.example.yanagladdeveloperslife.viewstate.RandomGifViewState
 import dagger.hilt.android.lifecycle.HiltViewModel
-import io.reactivex.Flowable.just
-import io.reactivex.Maybe.just
-import io.reactivex.Single.just
 import io.reactivex.schedulers.Schedulers
 import java.util.*
 import javax.inject.Inject
@@ -21,7 +17,8 @@ class RandomFragmentViewModel @Inject constructor(private val gifRepository: Gif
     PageViewModel() {
     private val isCurrentGifLoaded = MutableLiveData(false)
     private val currentGif: MutableLiveData<GifModel?> = MutableLiveData(null)
-    private val error: MutableLiveData<ErrorHandler> = MutableLiveData<ErrorHandler>(ErrorHandler.currentError)
+    private val error: MutableLiveData<ErrorHandler> =
+        MutableLiveData<ErrorHandler>(ErrorHandler.currentError)
     private val gifModels: MutableList<GifModel> = ArrayList<GifModel>()
 
     private val _viewState: MutableLiveData<RandomGifViewState> = MutableLiveData()
@@ -40,10 +37,28 @@ class RandomFragmentViewModel @Inject constructor(private val gifRepository: Gif
         return isCurrentGifLoaded
     }
 
-    fun addGifToDb(gifModel: GifModel){
+    fun addGifToDb(gifModel: GifModel) {
         gifRepository.addGifToFavourites(gifModel)
-        Log.d("LIST", "ADDED!")
     }
+
+    fun getGifById(gifModel: GifModel) : GifModel {
+        var result : GifModel?=null
+        val disposable = gifRepository.getFavById(gifModel)
+            .subscribeOn(Schedulers.io())
+            .observeOn(Schedulers.io())
+
+            .subscribe(
+                { viewState ->
+                    result = viewState
+                },
+                {
+
+                }
+            )
+        return result!!
+    }
+
+
 
     fun setIsCurrentGifLoaded(isCurrentGifLoaded: Boolean) {
         this.isCurrentGifLoaded.value = isCurrentGifLoaded
@@ -75,7 +90,7 @@ class RandomFragmentViewModel @Inject constructor(private val gifRepository: Gif
 
     fun addGifModel(gifModel: GifModel) {
         Log.d("Add", "POS $pos")
-        currentGif.setValue(gifModel)
+        currentGif.value = gifModel
         gifModels.add(gifModel)
         pos++
         cachedCurrentGif = gifModels[gifModels.size - 1]

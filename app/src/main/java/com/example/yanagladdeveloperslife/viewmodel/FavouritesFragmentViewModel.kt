@@ -21,7 +21,7 @@ class FavouritesFragmentViewModel @Inject constructor(private val gifRepository:
         loadGifsFromDb()
     }
 
-    fun loadGifsFromDb() {
+    private fun loadGifsFromDb() {
        val disp =  gifRepository.getFavourites()
             .subscribeOn(Schedulers.io())
             .observeOn(Schedulers.io())

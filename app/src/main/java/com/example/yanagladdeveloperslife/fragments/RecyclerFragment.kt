@@ -11,14 +11,21 @@ import com.example.yanagladdeveloperslife.MainActivity
 import com.example.yanagladdeveloperslife.R
 import com.example.yanagladdeveloperslife.adapters.GifsRecyclerAdapter
 import com.example.yanagladdeveloperslife.databinding.FragmentRecycleBinding
+import com.example.yanagladdeveloperslife.models.GifModel
 import com.example.yanagladdeveloperslife.values.ErrorHandler
 import com.example.yanagladdeveloperslife.values.PageOperation
 import com.example.yanagladdeveloperslife.viewmodel.RecyclerFragmentViewModel
 
 import dagger.hilt.android.AndroidEntryPoint
+import io.reactivex.Observable
+import io.reactivex.schedulers.Schedulers
+
+interface FavouriteHelper{
+    fun addToFavs(gifModel: GifModel)
+}
 
 @AndroidEntryPoint
-class RecyclerFragment : ButtonSupportedFragment() {
+class RecyclerFragment : ButtonSupportedFragment(), FavouriteHelper {
     var isOnScreen = false
     private var type: String? = null
     private val recyclerFragmentViewModel: RecyclerFragmentViewModel by viewModels()
@@ -73,6 +80,7 @@ class RecyclerFragment : ButtonSupportedFragment() {
         binding.recyclerview.layoutManager = GridLayoutManager(context, 1)
         gifsRecyclerAdapter = recyclerFragmentViewModel.type.value?.let {
             GifsRecyclerAdapter(
+                this,
                 it
             )
         }
@@ -154,5 +162,13 @@ class RecyclerFragment : ButtonSupportedFragment() {
             fragment.arguments = bundle
             return fragment
         }
+    }
+
+    override fun addToFavs(gifModel: GifModel) {
+        val disposable = Observable.just(recyclerFragmentViewModel)
+            .subscribeOn(Schedulers.io())
+            .subscribe { db ->
+                db.addGifToDb(gifModel)
+            }
     }
 }

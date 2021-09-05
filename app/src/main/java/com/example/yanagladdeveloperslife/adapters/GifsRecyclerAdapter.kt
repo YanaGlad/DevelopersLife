@@ -20,13 +20,18 @@ import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
 import com.example.yanagladdeveloperslife.R
 import com.example.yanagladdeveloperslife.databinding.LoadItemBinding
+import com.example.yanagladdeveloperslife.fragments.FavouriteHelper
 import com.example.yanagladdeveloperslife.models.GifModel
 import com.example.yanagladdeveloperslife.values.ErrorHandler
 import com.example.yanagladdeveloperslife.viewmodel.GifViewModel
+import dagger.hilt.android.AndroidEntryPoint
 
 import dagger.hilt.android.internal.managers.ViewComponentManager
+import io.reactivex.Observable
+import io.reactivex.schedulers.Schedulers
 
-class GifsRecyclerAdapter(_type: String) :
+
+class GifsRecyclerAdapter(val helper : FavouriteHelper, _type: String) :
     ListAdapter<GifModel, GifsRecyclerAdapter.ViewHolder>(DiffCallback()) {
 
     private val type: String = _type
@@ -55,7 +60,7 @@ class GifsRecyclerAdapter(_type: String) :
                 parent,
                 false
             ),
-            type
+            type, helper
         )
     }
 
@@ -67,7 +72,7 @@ class GifsRecyclerAdapter(_type: String) :
         return position
     }
 
-    class ViewHolder(private val binding: LoadItemBinding, val type: String) :
+    class ViewHolder(private val binding: LoadItemBinding, val type: String, val helper: FavouriteHelper) :
         RecyclerView.ViewHolder(binding.root) {
         val context: Context = binding.root.context
         private var viewModel: GifViewModel? = null
@@ -118,6 +123,15 @@ class GifsRecyclerAdapter(_type: String) :
             loadImage(gifModel.gifURL)
             binding.loadAuthor.text = context.getString(R.string.by) + " " + gifModel.author
             binding.loadDescription.text = gifModel.description
+
+            binding.favsButton.setOnClickListener {
+                helper.addToFavs(gifModel)
+//                Observable.just(gifViewModel)
+//                    .subscribeOn(Schedulers.io())
+//                    .subscribe { db ->
+//                        db.addGifToDb(gifModel)
+//                    }
+            }
 
         }
 

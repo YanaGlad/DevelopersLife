@@ -1,6 +1,7 @@
 package com.example.yanagladdeveloperslife.fragments
 
 import android.content.res.AssetManager
+import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -48,14 +49,28 @@ class RandomFragment : ButtonSupportedFragment() {
 
         randomFragmentViewModel.loadRandomGif()
 
+//        var gif : GifModel?=null
+//        Observable.just(randomFragmentViewModel)
+//            .subscribeOn(Schedulers.io())
+//            .subscribe { db ->
+//                gif = db.getGifById(randomFragmentViewModel.getCurrentGif().value!!)
+//
+//            }
+
+      //  if(gif!=null){
+            binding.favsButton.setColorFilter(Color.RED)
+     //   }
+
         return binding.root
     }
 
     private fun setupObservers() {
+
         randomFragmentViewModel.getCurrentGif().observe(viewLifecycleOwner) { gif: GifModel? ->
             if (gif != null) {
                 binding.loadDescription.text = gif.description
                 binding.loadAuthor.text = "By ${gif.author}"
+
             }
         }
         randomFragmentViewModel.getIsCurrentGifLoaded().observe(
@@ -132,7 +147,7 @@ class RandomFragment : ButtonSupportedFragment() {
                     db.addGifToDb(randomFragmentViewModel.getCurrentGif().value!!)
                 }
 
-         }
+        }
     }
 
     private fun onGifLoaded(viewState: RandomGifViewState.Loaded) {
@@ -204,10 +219,6 @@ class RandomFragment : ButtonSupportedFragment() {
 
     private fun setupErrorParams(assetManager: AssetManager?) {
         binding.loadImage.setImageResource(R.color.disabled_btn)
-
-//        Glide.with(context)
-//                .load(Support.loadBitmapImage(assetManager, "devnull.png"))
-//                .into(image);
         binding.loadDescription.setText(R.string.no_internet)
         binding.loadAuthor.text = ":("
     }

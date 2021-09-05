@@ -10,7 +10,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <RelativeLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -22,16 +22,30 @@
             android:scaleType="centerCrop"
             android:src="@drawable/waiting_background" />
 
+        <androidx.appcompat.widget.AppCompatImageButton
+            android:id="@+id/favs_button"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:background="@null"
+            android:layout_margin="8dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/ic_star"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
         <ProgressBar
             android:id="@+id/load_progressbar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_above="@+id/load_linear_layout"
             android:layout_centerHorizontal="true"
-            android:layout_marginBottom="30sp"
             android:indeterminate="true"
             android:theme="@style/Theme.AppCompat.Light"
-            android:visibility="visible" />
+            android:visibility="visible"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/load_image" />
 
 
         <androidx.appcompat.widget.LinearLayoutCompat
@@ -40,10 +54,13 @@
             android:layout_height="72dp"
             android:layout_alignParentBottom="true"
             android:background="@color/black_transp"
-            android:orientation="vertical"
             android:gravity="center_vertical"
+            android:orientation="vertical"
             android:paddingStart="@dimen/eight_step"
-            android:paddingEnd="@dimen/eight_step">
+            android:paddingEnd="@dimen/eight_step"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent">
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/load_description"
@@ -61,5 +78,5 @@
         </androidx.appcompat.widget.LinearLayoutCompat>
 
 
-    </RelativeLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.cardview.widget.CardView>

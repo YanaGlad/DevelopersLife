@@ -12,4 +12,6 @@ interface GifRepository {
     fun getTopGifs(page: Int, pageSize: Int, types: String?): Single<RecyclerGifViewState>
     fun addGifToFavourites(gifModel: GifModel)
     fun getFavourites() : Flowable<List<GifModel>>
+    fun getFavById(gifModel: GifModel) : Single<GifModel>
+
 }

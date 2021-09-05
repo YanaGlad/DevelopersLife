@@ -92,4 +92,8 @@ class GifRepositoryImpl @Inject constructor(
     override fun getFavourites(): Flowable<List<GifModel>> =
         localDataProvider.getAllFavourites()
 
+    override fun getFavById(gifModel: GifModel): Single<GifModel> =
+        localDataProvider.getGifByDescription(gifModel.id.toLong())
+
+
 }

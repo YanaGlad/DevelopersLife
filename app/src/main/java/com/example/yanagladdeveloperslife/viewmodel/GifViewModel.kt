@@ -9,6 +9,7 @@ class GifViewModel : ViewModel() {
     private val isCurrentGifLoaded = MutableLiveData(false)
     var error: MutableLiveData<ErrorHandler> = MutableLiveData<ErrorHandler>(ErrorHandler.currentError)
 
+
     fun setError(handler: ErrorHandler) {
         error.value = handler
     }
