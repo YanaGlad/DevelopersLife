@@ -25,6 +25,7 @@ import com.example.yanagladdeveloperslife.viewmodel.RandomFragmentViewModel
 import com.example.yanagladdeveloperslife.viewstate.RandomGifViewState
 import dagger.hilt.android.AndroidEntryPoint
 import io.reactivex.Observable
+import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 
 @AndroidEntryPoint
@@ -37,6 +38,7 @@ class RandomFragment : Fragment(), Clickable {
     private val randomFragmentViewModel: RandomFragmentViewModel by viewModels()
     private lateinit var savedUrl: String
 
+    private val compositeDisposable = CompositeDisposable()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -59,59 +61,62 @@ class RandomFragment : Fragment(), Clickable {
         randomFragmentViewModel.loadRandomGif()
     }
 
-    private fun setupObservers() {
+    override fun onDestroyView() {
+        super.onDestroyView()
+        compositeDisposable.dispose()
+        randomFragmentViewModel.dispose()
+    }
+
+    private fun FragmentRandomBinding.setupObservers() {
         randomFragmentViewModel.getCurrentGif().observe(viewLifecycleOwner) { gif: GifModel? ->
             if (gif != null) {
-                binding.loadDescription.text = gif.description
-                binding.loadAuthor.text = "By ${gif.author}"
-
+                loadDescription.text = gif.description
+                loadAuthor.text = "By ${gif.author}"
             }
         }
         randomFragmentViewModel.getIsCurrentGifLoaded().observe(
             viewLifecycleOwner
         ) { isLoaded ->
-            if (isLoaded) binding.loadProgressbar.visibility =
-                View.INVISIBLE else binding.loadProgressbar.visibility =
-                View.VISIBLE
+            if (isLoaded) loadProgressbar.visibility = View.INVISIBLE else loadProgressbar.visibility = View.VISIBLE
         }
         randomFragmentViewModel.canLoadNext.observe(viewLifecycleOwner) { enabled: Boolean? ->
-            if (isOnScreen) binding.buttonsLayout.btnNext.isEnabled = enabled!!
+            if (isOnScreen) buttonsLayout.btnNext.isEnabled = enabled!!
         }
 
         randomFragmentViewModel.canLoadPrevious.observe(viewLifecycleOwner) { enabled ->
-            if (isOnScreen) binding.buttonsLayout.btnPrevious.isEnabled = enabled
+            if (isOnScreen) buttonsLayout.btnPrevious.isEnabled = enabled
         }
 
         randomFragmentViewModel.getError().observe(viewLifecycleOwner) { e ->
             randomFragmentViewModel.updateCanLoadPrevious()
-            binding.recycleErrorProgressbar.visibility = View.INVISIBLE
+            recycleErrorProgressbar.visibility = View.INVISIBLE
             if (e != ErrorHandler.SUCCESS) {
-                binding.loadLinearLayout.visibility = View.GONE
+                loadLinearLayout.visibility = View.GONE
                 when (e) {
                     ErrorHandler.LOAD_ERROR -> {
-                        binding.recyclErrorBtn.visibility = View.VISIBLE
+                        recyclErrorBtn.visibility = View.VISIBLE
                         randomFragmentViewModel.canLoadNext = MutableLiveData(false)
-                        binding.loadImage.setBackgroundResource(R.drawable.waiting_background)
+                        loadImage.setBackgroundResource(R.drawable.waiting_background)
                     }
                     ErrorHandler.IMAGE_ERROR -> {
-                        binding.recyclErrorBtn.visibility = View.VISIBLE
+                        recyclErrorBtn.visibility = View.VISIBLE
                         setupErrorParams(requireContext().assets)
                         randomFragmentViewModel.canLoadNext = MutableLiveData(false)
-                        binding.loadImage.setBackgroundResource(R.drawable.waiting_background)
+                        loadImage.setBackgroundResource(R.drawable.waiting_background)
                     }
                     else -> {
                     }
                 }
-                binding.recyclErrorBtn.setOnClickListener {
-                    if (binding.recycleErrorProgressbar.visibility == View.INVISIBLE) {
-                        binding.recycleErrorProgressbar.visibility = View.VISIBLE
+                recyclErrorBtn.setOnClickListener {
+                    if (recycleErrorProgressbar.visibility == View.INVISIBLE) {
+                        recycleErrorProgressbar.visibility = View.VISIBLE
                         randomFragmentViewModel.loadRandomGif()
                     }
                 }
             } else {
-                binding.recyclErrorBtn.visibility = View.GONE
-                binding.recycleErrorProgressbar.visibility = View.GONE
-                binding.loadLinearLayout.visibility = View.VISIBLE
+                recyclErrorBtn.visibility = View.GONE
+                recycleErrorProgressbar.visibility = View.GONE
+                loadLinearLayout.visibility = View.VISIBLE
             }
         }
 
@@ -120,12 +125,10 @@ class RandomFragment : Fragment(), Clickable {
         }
     }
 
-    private fun setupButtonListeners() {
+    private fun FragmentRandomBinding.setupButtonListeners() {
         val onPrevClickListener = View.OnClickListener {
-            if (!randomFragmentViewModel.goBack()) Log.e(
-                "Cache is empty",
-                "No cached gifResponses"
-            ) else loadGifWithGlide(randomFragmentViewModel.getCurrentGif().value?.gifURL)
+            if (!randomFragmentViewModel.goBack()) Log.e("Cache is empty", "No cached gifResponses")
+            else loadGifWithGlide(randomFragmentViewModel.getCurrentGif().value?.gifURL)
 
             try {
                 Thread.sleep(100)
@@ -134,29 +137,30 @@ class RandomFragment : Fragment(), Clickable {
             }
         }
         val onNextClickListener = View.OnClickListener { loadGif() }
-        binding.buttonsLayout.btnPrevious.setOnClickListener(onPrevClickListener)
-        binding.buttonsLayout.btnNext.setOnClickListener(onNextClickListener)
+        buttonsLayout.btnPrevious.setOnClickListener(onPrevClickListener)
+        buttonsLayout.btnNext.setOnClickListener(onNextClickListener)
 
-        binding.favsButton.setOnClickListener {
-            Observable.just(randomFragmentViewModel)
+        favsButton.setOnClickListener {
+            compositeDisposable.add(Observable.just(randomFragmentViewModel)
                 .subscribeOn(Schedulers.io())
                 .subscribe { db ->
                     db.addGifToDb(randomFragmentViewModel.getCurrentGif().value!!)
                 }
-            binding.favsButton.setColorFilter(Color.RED)
+            )
+            favsButton.setColorFilter(Color.RED)
         }
     }
 
-    private fun onGifLoaded(viewState: RandomGifViewState.Loaded) {
+    private fun FragmentRandomBinding.onGifLoaded(viewState: RandomGifViewState.Loaded) {
         randomFragmentViewModel.addGifModel(viewState.gifResponse.createGifModel())
         loadGifWithGlide(randomFragmentViewModel.getCurrentGif().value?.gifURL)
-        binding.recyclErrorBtn.visibility = View.GONE
-        binding.recycleErrorProgressbar.visibility = View.GONE
-        binding.loadLinearLayout.visibility = View.VISIBLE
+        recyclErrorBtn.visibility = View.GONE
+        recycleErrorProgressbar.visibility = View.GONE
+        loadLinearLayout.visibility = View.VISIBLE
         randomFragmentViewModel.setAppError(ErrorHandler.SUCCESS)
     }
 
-    private fun handleViewState(viewState: RandomGifViewState?) {
+    private fun FragmentRandomBinding.handleViewState(viewState: RandomGifViewState?) {
 
         when (viewState) {
             is RandomGifViewState.Loaded -> {
