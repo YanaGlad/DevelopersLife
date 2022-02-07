@@ -41,21 +41,25 @@ class RandomFragment : Fragment(), Clickable {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        _binding = FragmentRandomBinding.inflate(layoutInflater)
-        return binding.root
+        savedInstanceState: Bundle?,
+    ): View = FragmentRandomBinding.inflate(layoutInflater).root
+
+    override fun onDestroy() {
+        super.onDestroy()
+        randomFragmentViewModel.dispose()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setupButtonListeners()
-        setupObservers()
+
+        with(binding) {
+            setupButtonListeners()
+            setupObservers()
+        }
         randomFragmentViewModel.loadRandomGif()
     }
 
     private fun setupObservers() {
-
         randomFragmentViewModel.getCurrentGif().observe(viewLifecycleOwner) { gif: GifModel? ->
             if (gif != null) {
                 binding.loadDescription.text = gif.description
@@ -102,7 +106,7 @@ class RandomFragment : Fragment(), Clickable {
                     if (binding.recycleErrorProgressbar.visibility == View.INVISIBLE) {
                         binding.recycleErrorProgressbar.visibility = View.VISIBLE
                         randomFragmentViewModel.loadRandomGif()
-                     }
+                    }
                 }
             } else {
                 binding.recyclErrorBtn.visibility = View.GONE
@@ -187,7 +191,7 @@ class RandomFragment : Fragment(), Clickable {
                     e: GlideException?,
                     model: Any,
                     target: Target<GifDrawable?>,
-                    isFirstResource: Boolean
+                    isFirstResource: Boolean,
                 ): Boolean {
                     savedUrl = model as String
                     randomFragmentViewModel.setAppError(ErrorHandler.SUCCESS)
@@ -199,7 +203,7 @@ class RandomFragment : Fragment(), Clickable {
                     model: Any,
                     target: Target<GifDrawable?>,
                     dataSource: DataSource,
-                    isFirstResource: Boolean
+                    isFirstResource: Boolean,
                 ): Boolean {
                     if (randomFragmentViewModel.getError()
                             .value!! == ErrorHandler.IMAGE_ERROR

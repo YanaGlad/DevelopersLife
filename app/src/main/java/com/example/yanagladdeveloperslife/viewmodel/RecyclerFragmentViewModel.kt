@@ -1,37 +1,32 @@
 package com.example.yanagladdeveloperslife.viewmodel
 
 import android.util.Log
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.yanagladdeveloperslife.ErrorHandler
 import com.example.yanagladdeveloperslife.PageOperation
-import com.example.yanagladdeveloperslife.models.response.GifResponse
 import com.example.yanagladdeveloperslife.models.GifModel
+import com.example.yanagladdeveloperslife.models.response.GifResponse
 import com.example.yanagladdeveloperslife.repository.GifRepository
 import com.example.yanagladdeveloperslife.viewstate.RecyclerGifViewState
 import dagger.hilt.android.lifecycle.HiltViewModel
-import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import java.util.*
 import javax.inject.Inject
 
 @HiltViewModel
-class RecyclerFragmentViewModel @Inject constructor(private val gifRepository: GifRepository) :
-    ButtonsViewModel() {
+class RecyclerFragmentViewModel @Inject constructor(private val gifRepository: GifRepository) : ButtonsViewModel() {
+
     val type = MutableLiveData<String?>(null)
     val currentPage = MutableLiveData(0)
-        get() = field
 
     var error: MutableLiveData<ErrorHandler> =
         MutableLiveData<ErrorHandler>(ErrorHandler.currentError)
 
-    private val _viewState: MutableLiveData<RecyclerGifViewState> = MutableLiveData()
-    val viewState: LiveData<RecyclerGifViewState>
-        get() = _viewState
-
     val favsList: MutableLiveData<List<GifModel>> = MutableLiveData<List<GifModel>>()
-    private val gifModels: MutableLiveData<ArrayList<GifModel>?> =
-        MutableLiveData<ArrayList<GifModel>?>(null)
+
+    private val _viewState: MutableLiveData<RecyclerGifViewState> = MutableLiveData()
+
+    private val gifModels: MutableLiveData<ArrayList<GifModel>?> = MutableLiveData<ArrayList<GifModel>?>(null)
 
     init {
         favsList.value = arrayListOf()
@@ -43,7 +38,7 @@ class RecyclerFragmentViewModel @Inject constructor(private val gifRepository: G
         gifRepository.deleteFavourite(gifModel)
     }
 
-    fun loadGifsFromDb() {
+    private fun loadGifsFromDb() {
         val disp = gifRepository.getFavourites()
             .subscribeOn(Schedulers.io())
             .observeOn(Schedulers.io())
@@ -58,11 +53,10 @@ class RecyclerFragmentViewModel @Inject constructor(private val gifRepository: G
     }
 
     fun loadRecyclerGifs(type: String) {
-        var response: Disposable? = null
 
         when (type) {
             "latest" -> {
-                response = currentPage.value?.let {
+                currentPage.value?.let {
                     gifRepository.getLatestGifs(it, 10, "gifResponse")
                         .subscribeOn(Schedulers.io())
                         .observeOn(Schedulers.io())
@@ -76,17 +70,12 @@ class RecyclerFragmentViewModel @Inject constructor(private val gifRepository: G
                                         setError(ErrorHandler.LOAD_ERROR)
                                     }
                                 }
-                            },
-                            {
-
-                            }
+                            }, {}
                         )
-
                 }
-
             }
             "top" -> {
-                response = currentPage.value?.let {
+                currentPage.value?.let {
                     gifRepository.getTopGifs(it, 10, "gifResponse")
                         .subscribeOn(Schedulers.io())
                         .observeOn(Schedulers.io())
@@ -100,17 +89,12 @@ class RecyclerFragmentViewModel @Inject constructor(private val gifRepository: G
                                         setError(ErrorHandler.LOAD_ERROR)
                                     }
                                 }
-                            },
-                            {
-
-                            }
+                            }, {}
                         )
-
                 }
             }
         }
     }
-
     fun setError(error: ErrorHandler?) {
         this.error.postValue(error)
     }

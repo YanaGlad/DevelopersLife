@@ -19,6 +19,7 @@ import com.example.yanagladdeveloperslife.viewmodel.RecyclerFragmentViewModel
 
 import dagger.hilt.android.AndroidEntryPoint
 import io.reactivex.Observable
+import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 
 interface FavouriteHelper {
@@ -28,13 +29,17 @@ interface FavouriteHelper {
 
 @AndroidEntryPoint
 class RecyclerFragment : Fragment(), FavouriteHelper, Clickable {
+
     var isOnScreen = false
+
     private var type: String? = null
     private val recyclerFragmentViewModel: RecyclerFragmentViewModel by viewModels()
     private var gifsRecyclerAdapter: GifsRecyclerAdapter? = null
 
     private var _binding: FragmentRecycleBinding? = null
     private val binding get() = _binding!!
+
+    private val compositeDisposable = CompositeDisposable()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -45,10 +50,8 @@ class RecyclerFragment : Fragment(), FavouriteHelper, Clickable {
         } else {
             Log.e("TAG_MAIN_FRAG", "No arguments in bundle")
         }
-
         loadGifs(PageOperation.STAND, type!!)
     }
-
 
     private fun loadGifs(pageOperation: PageOperation?, type: String) {
         recyclerFragmentViewModel.canLoadNext = MutableLiveData(recyclerFragmentViewModel.error.value == ErrorHandler.SUCCESS)
@@ -64,86 +67,81 @@ class RecyclerFragment : Fragment(), FavouriteHelper, Clickable {
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View {
         _binding = FragmentRecycleBinding.inflate(layoutInflater)
 
-
-
-        setupRecycler()
-        setupOnNextOnPrevListeners()
-        setupObservers()
-
+        with(binding) {
+            setupRecycler()
+            setupOnNextOnPrevListeners()
+            setupObservers()
+        }
         return binding.root
     }
 
-    private fun setupRecycler() {
-        binding.recyclerview.setHasFixedSize(true)
-        binding.recyclerview.layoutManager = GridLayoutManager(context, 1)
+    override fun onDestroy() {
+        super.onDestroy()
+        compositeDisposable.dispose()
+    }
+
+    private fun FragmentRecycleBinding.setupRecycler() {
+        recyclerview.setHasFixedSize(true)
+        recyclerview.layoutManager = GridLayoutManager(context, 1)
         gifsRecyclerAdapter = recyclerFragmentViewModel.type.value?.let {
             GifsRecyclerAdapter(
-                this,
+                this@RecyclerFragment,
                 it
             )
         }
     }
 
-    private fun setupOnNextOnPrevListeners() {
-        val onNextClickListener = View.OnClickListener {
-            type?.let { type ->
-                loadGifs(
-                    PageOperation.NEXT,
-                    type
-                )
-            }
-        }
-        val onPrevClickListener = View.OnClickListener {
-            type?.let { type ->
-                loadGifs(
-                    PageOperation.PREVIOUS,
-                    type
-                )
-            }
-        }
-        binding.buttonsLayout.btnNext.setOnClickListener(onNextClickListener)
-        binding.buttonsLayout.btnPrevious.setOnClickListener(onPrevClickListener)
+    private fun FragmentRecycleBinding.setupOnNextOnPrevListeners() {
+        val onNextClickListener = View.OnClickListener { type?.let { type -> loadGifs(PageOperation.NEXT, type) } }
+        val onPrevClickListener = View.OnClickListener { type?.let { type -> loadGifs(PageOperation.PREVIOUS, type) } }
+
+        buttonsLayout.btnNext.setOnClickListener(onNextClickListener)
+        buttonsLayout.btnPrevious.setOnClickListener(onPrevClickListener)
     }
 
-    private fun setupObservers() {
+    private fun FragmentRecycleBinding.setupObservers() {
         recyclerFragmentViewModel.getGifModels().observe(viewLifecycleOwner) { gifs ->
             if (gifs != null) {
                 recyclerFragmentViewModel.setError(ErrorHandler.SUCCESS)
                 gifsRecyclerAdapter?.submitList(gifs)
-                binding.recyclerview.adapter = gifsRecyclerAdapter
+                recyclerview.adapter = gifsRecyclerAdapter
             }
         }
         recyclerFragmentViewModel.error.observe(viewLifecycleOwner) { e ->
             recyclerFragmentViewModel.updateCanLoadPrevious()
             recyclerFragmentViewModel.canLoadNext = MutableLiveData(true)
-            binding.recycleErrorProgressbar.visibility = View.INVISIBLE
+
+            recycleErrorProgressbar.visibility = View.INVISIBLE
+
             if (e != ErrorHandler.SUCCESS) {
-                binding.recyclerview.visibility = View.GONE
-                binding.recyclErrorLayout.visibility = View.VISIBLE
+                recyclerview.visibility = View.GONE
+                recyclErrorLayout.visibility = View.VISIBLE
+
                 if (e == ErrorHandler.LOAD_ERROR) binding.recyclErrorTitle.text =
                     "${context?.getString(R.string.errorr)} ${context?.getString(R.string.no_internet)} "
-                binding.recyclErrorBtn.setOnClickListener {
-                    if (binding.recycleErrorProgressbar.visibility == View.INVISIBLE) {
-                        binding.recycleErrorProgressbar.visibility = View.VISIBLE
+
+                recyclErrorBtn.setOnClickListener {
+                    if (recycleErrorProgressbar.visibility == View.INVISIBLE) {
+                        recycleErrorProgressbar.visibility = View.VISIBLE
                         if (e == ErrorHandler.LOAD_ERROR) {
                             type?.let { loadGifs(PageOperation.STAND, it) }
                         }
                     }
                 }
             } else {
-                binding.recyclErrorLayout.visibility = View.GONE
-                binding.recyclerview.visibility = View.VISIBLE
+                recyclErrorLayout.visibility = View.GONE
+                recyclerview.visibility = View.VISIBLE
             }
         }
         recyclerFragmentViewModel.canLoadNext.observe(viewLifecycleOwner) { enabled ->
-            if (isOnScreen) binding.buttonsLayout.btnNext.isEnabled = enabled
+            if (isOnScreen) buttonsLayout.btnNext.isEnabled = enabled
         }
         recyclerFragmentViewModel.canLoadPrevious.observe(viewLifecycleOwner) { enabled ->
-            if (isOnScreen) binding.buttonsLayout.btnPrevious.isEnabled = enabled
+            if (isOnScreen) buttonsLayout.btnPrevious.isEnabled = enabled
         }
     }
 
@@ -161,6 +159,18 @@ class RecyclerFragment : Fragment(), FavouriteHelper, Clickable {
         return recyclerFragmentViewModel.canLoadPrevious.value!!
     }
 
+    override fun addToFavs(gifModel: GifModel) {
+        compositeDisposable.add(Observable.just(recyclerFragmentViewModel)
+            .subscribeOn(Schedulers.io())
+            .subscribe { db ->
+                db.addGifToDb(gifModel)
+            })
+    }
+
+    override fun getAllFavs(): List<GifModel> {
+        return recyclerFragmentViewModel.favsList.value!!
+    }
+
     companion object {
 
         fun newInstance(type: String?): RecyclerFragment {
@@ -170,17 +180,5 @@ class RecyclerFragment : Fragment(), FavouriteHelper, Clickable {
             fragment.arguments = bundle
             return fragment
         }
-    }
-
-    override fun addToFavs(gifModel: GifModel) {
-        val disposable = Observable.just(recyclerFragmentViewModel)
-            .subscribeOn(Schedulers.io())
-            .subscribe { db ->
-                db.addGifToDb(gifModel)
-            }
-    }
-
-    override fun getAllFavs(): List<GifModel> {
-        return recyclerFragmentViewModel.favsList.value!!
     }
 }

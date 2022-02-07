@@ -2,7 +2,6 @@ package com.example.yanagladdeveloperslife.viewstate
 
 import com.example.yanagladdeveloperslife.models.response.GifResponse
 
-
 sealed class RandomGifViewState {
     object Loading : RandomGifViewState()
 

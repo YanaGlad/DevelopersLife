@@ -12,6 +12,5 @@ sealed class RecyclerGifViewState {
 
         object UnexpectedError : RecyclerGifViewState()
     }
-
     object SuccessOperation : RecyclerGifViewState()
 }

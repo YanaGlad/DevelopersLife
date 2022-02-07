@@ -22,7 +22,6 @@ data class GifResponse(
     @field:SerializedName("fileSize") val fileSize: Int?,
     @field:SerializedName("canVote") val canVote: Boolean?,
 ) {
-
     fun createGifModel(): GifModel {
         return GifModel(
             id!!,

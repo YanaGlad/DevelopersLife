@@ -25,10 +25,10 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
         myPagerAdapter = MyPagerAdapter(applicationContext, supportFragmentManager)
 
-        binding.viewPager.offscreenPageLimit = 3
-        binding.viewPager.adapter = myPagerAdapter
-        binding.tabs.setupWithViewPager(binding.viewPager)
-
+        with(binding){
+            viewPager.offscreenPageLimit = 3
+            viewPager.adapter = myPagerAdapter
+            tabs.setupWithViewPager(binding.viewPager)
+        }
     }
 }
-

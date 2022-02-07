@@ -13,17 +13,20 @@ import java.util.*
 import javax.inject.Inject
 
 @HiltViewModel
-class RandomFragmentViewModel @Inject constructor(private val gifRepository: GifRepository) :
-    ButtonsViewModel() {
+class RandomFragmentViewModel @Inject constructor(private val gifRepository: GifRepository) : ButtonsViewModel() {
+
     private val isCurrentGifLoaded = MutableLiveData(false)
     private val currentGif: MutableLiveData<GifModel?> = MutableLiveData(null)
-    private val error: MutableLiveData<ErrorHandler> =
-        MutableLiveData<ErrorHandler>(ErrorHandler.currentError)
+    private val error: MutableLiveData<ErrorHandler> = MutableLiveData<ErrorHandler>(ErrorHandler.currentError)
     private val gifModels: MutableList<GifModel> = ArrayList<GifModel>()
 
     private val _viewState: MutableLiveData<RandomGifViewState> = MutableLiveData()
     val viewState: LiveData<RandomGifViewState>
         get() = _viewState
+
+    fun dispose(){
+        gifRepository.dispose()
+    }
 
     fun getError(): MutableLiveData<ErrorHandler> {
         return error
@@ -41,8 +44,8 @@ class RandomFragmentViewModel @Inject constructor(private val gifRepository: Gif
         gifRepository.addGifToFavourites(gifModel)
     }
 
-    fun getGifById(gifModel: GifModel) : GifModel {
-        var result : GifModel?=null
+    fun getGifById(gifModel: GifModel): GifModel {
+        var result: GifModel? = null
         val disposable = gifRepository.getFavById(gifModel)
             .subscribeOn(Schedulers.io())
             .observeOn(Schedulers.io())
@@ -57,8 +60,6 @@ class RandomFragmentViewModel @Inject constructor(private val gifRepository: Gif
             )
         return result!!
     }
-
-
 
     fun setIsCurrentGifLoaded(isCurrentGifLoaded: Boolean) {
         this.isCurrentGifLoaded.value = isCurrentGifLoaded
@@ -79,12 +80,8 @@ class RandomFragmentViewModel @Inject constructor(private val gifRepository: Gif
             .subscribeOn(Schedulers.io())
             .observeOn(Schedulers.io())
             .subscribe(
-                { viewState ->
-                    _viewState.postValue(viewState)
-                },
-                {
-
-                }
+                { viewState -> _viewState.postValue(viewState) },
+                {}
             )
 
     fun addGifModel(gifModel: GifModel) {

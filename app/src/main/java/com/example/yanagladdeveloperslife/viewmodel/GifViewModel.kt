@@ -16,5 +16,4 @@ class GifViewModel : ViewModel() {
         set(value) {
             field.value = value.value
         }
-
 }

@@ -14,7 +14,7 @@ import javax.inject.Inject
 class FavouritesFragmentViewModel @Inject constructor(private val gifRepository: GifRepository) :
     ViewModel() {
 
-    val favsList: MutableLiveData<List<GifModel>> = MutableLiveData<List<GifModel>>()
+    private val favsList: MutableLiveData<List<GifModel>> = MutableLiveData<List<GifModel>>()
 
     init {
         favsList.value = arrayListOf()

@@ -6,8 +6,7 @@ import com.example.yanagladdeveloperslife.models.response.GifsResponse
 import io.reactivex.Flowable
 import javax.inject.Inject
 
-class RemoteDataProviderImpl @Inject constructor(private val api: Api) :
-    RemoteDataProvider {
+class RemoteDataProviderImpl @Inject constructor(private val api: Api) : RemoteDataProvider {
 
     override fun getRandomGif(): Flowable<GifResponse> = api.getRandomGif()
 
