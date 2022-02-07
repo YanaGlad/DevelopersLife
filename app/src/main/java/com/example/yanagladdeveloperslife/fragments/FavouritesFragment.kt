@@ -14,27 +14,39 @@ import com.example.yanagladdeveloperslife.viewmodel.FavouritesFragmentViewModel
 import com.example.yanagladdeveloperslife.viewmodel.RecyclerFragmentViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import io.reactivex.Observable
+import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 
 @AndroidEntryPoint
 class FavouritesFragment : Fragment(), FavouriteHelper {
+
     var isOnScreen = false
     private var _binding: FragmentFavouritesBinding? = null
     private val binding get() = _binding!!
     private var gifsRecyclerAdapter: GifsRecyclerAdapter? = null
     private val favouritesFragmentViewModel: RecyclerFragmentViewModel by viewModels()
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-    }
+    private val compositeDisposable = CompositeDisposable()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        _binding = FragmentFavouritesBinding.inflate(layoutInflater)
-        return binding.root
+        savedInstanceState: Bundle?,
+    ): View = FragmentFavouritesBinding.inflate(layoutInflater).root
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        setupRecycler()
+
+        favouritesFragmentViewModel.favsList.observe(viewLifecycleOwner) {
+            gifsRecyclerAdapter?.submitList(favouritesFragmentViewModel.favsList.value)
+            binding.recyclerview.adapter = gifsRecyclerAdapter
+        }
+    }
+    override fun onDestroy() {
+        super.onDestroy()
+
+        favouritesFragmentViewModel.dispose()
+        compositeDisposable.dispose()
     }
 
     private fun setupRecycler() {
@@ -45,32 +57,21 @@ class FavouritesFragment : Fragment(), FavouriteHelper {
         )
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        setupRecycler()
+    override fun addToFavs(gifModel: GifModel) {
+        compositeDisposable.add(Observable.just(favouritesFragmentViewModel)
+            .subscribeOn(Schedulers.io())
+            .subscribe { db ->
+                db.deleteGifFromFavs(gifModel)
+            })
+    }
 
-        favouritesFragmentViewModel.favsList.observe(viewLifecycleOwner) {
-            gifsRecyclerAdapter?.submitList(favouritesFragmentViewModel.favsList.value)
-            binding.recyclerview.adapter = gifsRecyclerAdapter
-        }
-
+    override fun getAllFavs(): List<GifModel> {
+        return favouritesFragmentViewModel.favsList.value!!
     }
 
     companion object {
         fun newInstance(): FavouritesFragment {
             return FavouritesFragment()
         }
-    }
-
-    override fun addToFavs(gifModel: GifModel) {
-        val disposable = Observable.just(favouritesFragmentViewModel)
-            .subscribeOn(Schedulers.io())
-            .subscribe { db ->
-                db.deleteGifFromFavs(gifModel)
-            }
-    }
-
-    override fun getAllFavs(): List<GifModel> {
-        return favouritesFragmentViewModel.favsList.value!!
     }
 }

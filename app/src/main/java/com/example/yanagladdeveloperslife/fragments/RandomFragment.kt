@@ -209,9 +209,7 @@ class RandomFragment : Fragment(), Clickable {
                     dataSource: DataSource,
                     isFirstResource: Boolean,
                 ): Boolean {
-                    if (randomFragmentViewModel.getError()
-                            .value!! == ErrorHandler.IMAGE_ERROR
-                    ) {
+                    if (randomFragmentViewModel.getError().value!! == ErrorHandler.IMAGE_ERROR) {
                         randomFragmentViewModel.setAppError(ErrorHandler.SUCCESS)
                     }
                     randomFragmentViewModel.setIsCurrentGifLoaded(true)
@@ -247,6 +245,4 @@ class RandomFragment : Fragment(), Clickable {
     override fun previousEnabled(): Boolean {
         return randomFragmentViewModel.canLoadPrevious.value!!
     }
-
-
 }

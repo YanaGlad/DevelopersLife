@@ -34,6 +34,10 @@ class RecyclerFragmentViewModel @Inject constructor(private val gifRepository: G
         loadGifsFromDb()
     }
 
+    fun dispose() {
+        gifRepository.dispose()
+    }
+
     fun deleteGifFromFavs(gifModel: GifModel) {
         gifRepository.deleteFavourite(gifModel)
     }
@@ -95,6 +99,7 @@ class RecyclerFragmentViewModel @Inject constructor(private val gifRepository: G
             }
         }
     }
+
     fun setError(error: ErrorHandler?) {
         this.error.postValue(error)
     }

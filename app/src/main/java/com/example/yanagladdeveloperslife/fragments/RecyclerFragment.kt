@@ -82,6 +82,7 @@ class RecyclerFragment : Fragment(), FavouriteHelper, Clickable {
     override fun onDestroy() {
         super.onDestroy()
         compositeDisposable.dispose()
+        recyclerFragmentViewModel.dispose()
     }
 
     private fun FragmentRecycleBinding.setupRecycler() {
@@ -121,8 +122,7 @@ class RecyclerFragment : Fragment(), FavouriteHelper, Clickable {
                 recyclerview.visibility = View.GONE
                 recyclErrorLayout.visibility = View.VISIBLE
 
-                if (e == ErrorHandler.LOAD_ERROR) binding.recyclErrorTitle.text =
-                    "${context?.getString(R.string.errorr)} ${context?.getString(R.string.no_internet)} "
+                if (e == ErrorHandler.LOAD_ERROR) binding.recyclErrorTitle.text = "${context?.getString(R.string.errorr)} ${context?.getString(R.string.no_internet)} "
 
                 recyclErrorBtn.setOnClickListener {
                     if (recycleErrorProgressbar.visibility == View.INVISIBLE) {
