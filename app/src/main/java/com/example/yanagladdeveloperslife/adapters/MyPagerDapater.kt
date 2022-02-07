@@ -12,8 +12,8 @@ import com.example.yanagladdeveloperslife.fragments.FavouritesFragment
 import com.example.yanagladdeveloperslife.fragments.RandomFragment
 import com.example.yanagladdeveloperslife.fragments.RecyclerFragment
 
-class MyPagerAdapter(private val context: Context, manager: FragmentManager?) :
-    FragmentPagerAdapter(manager!!, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
+class MyPagerAdapter(private val context: Context, manager: FragmentManager?) : FragmentPagerAdapter(manager!!, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
+
     private lateinit var randomFragment: RandomFragment
     private lateinit var topFragment: RecyclerFragment
     private lateinit var latestFragment: RecyclerFragment
@@ -47,7 +47,6 @@ class MyPagerAdapter(private val context: Context, manager: FragmentManager?) :
             2 -> latestFragment.isOnScreen = true
             3 -> favouritesFragment.isOnScreen = true
         }
-
 
         super.setPrimaryItem(container, position, obj)
     }

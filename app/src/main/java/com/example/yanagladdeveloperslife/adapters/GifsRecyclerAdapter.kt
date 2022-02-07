@@ -30,8 +30,7 @@ import com.example.yanagladdeveloperslife.viewmodel.GifViewModel
 import dagger.hilt.android.internal.managers.ViewComponentManager
 
 
-class GifsRecyclerAdapter(val helper: FavouriteHelper, _type: String) :
-    ListAdapter<GifModel, GifsRecyclerAdapter.ViewHolder>(DiffCallback()) {
+class GifsRecyclerAdapter(val helper: FavouriteHelper, _type: String) : ListAdapter<GifModel, GifsRecyclerAdapter.ViewHolder>(DiffCallback()) {
 
     private val type: String = _type
 
@@ -45,10 +44,8 @@ class GifsRecyclerAdapter(val helper: FavouriteHelper, _type: String) :
             return oldItem == newItem
         }
     }
-
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val model = getItem(position)
-
         holder.bind(model)
     }
 
@@ -62,7 +59,6 @@ class GifsRecyclerAdapter(val helper: FavouriteHelper, _type: String) :
             type, helper
         )
     }
-
     override fun getItemId(position: Int): Long {
         return position.toLong()
     }
@@ -116,14 +112,11 @@ class GifsRecyclerAdapter(val helper: FavouriteHelper, _type: String) :
                 context.baseContext
             } else context
 
-            val gifViewModel: GifViewModel =
-                ViewModelProvider((res as ViewModelStoreOwner)).get(
-                    type,
-                    GifViewModel::class.java
-                )
+            val gifViewModel: GifViewModel = ViewModelProvider((res as ViewModelStoreOwner)).get(type, GifViewModel::class.java)
 
             setViewModel(gifViewModel)
             loadImage(gifModel.gifURL)
+
             binding.loadAuthor.text = context.getString(R.string.by) + " " + gifModel.author
             binding.loadDescription.text = gifModel.description
 
@@ -133,12 +126,10 @@ class GifsRecyclerAdapter(val helper: FavouriteHelper, _type: String) :
                     break
                 }
             }
-
             binding.favsButton.setOnClickListener {
                 helper.addToFavs(gifModel)
                 binding.favsButton.setColorFilter(Color.RED)
             }
-
         }
 
         private fun setViewModel(viewModel: GifViewModel) {
@@ -169,7 +160,7 @@ class GifsRecyclerAdapter(val helper: FavouriteHelper, _type: String) :
             binding.loadImage.setImageResource(R.color.disabled_btn)
         }
 
-        fun loadImage(url: String?) {
+        private fun loadImage(url: String?) {
             prepareForLoading()
             Glide.with(context)
                 .asGif()
@@ -186,8 +177,5 @@ class GifsRecyclerAdapter(val helper: FavouriteHelper, _type: String) :
                 context.baseContext
             } else context
         }
-
     }
-
-
 }

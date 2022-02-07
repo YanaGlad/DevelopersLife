@@ -18,5 +18,4 @@ interface GifDao {
 
     @Delete()
     fun deleteFavourite(item : GifEntity)
-
 }

@@ -6,8 +6,8 @@ import io.reactivex.Flowable
 import io.reactivex.Single
 import javax.inject.Inject
 
-class RoomFavouritesDataProvider @Inject constructor(val dao: GifDao) :
-    LocalFavouritesDataProvider {
+class RoomFavouritesDataProvider @Inject constructor(val dao: GifDao) : LocalFavouritesDataProvider {
+
     override fun insertFavourite(item: GifModel) =
         dao.insertFavourite(
             GifEntity(
@@ -30,7 +30,6 @@ class RoomFavouritesDataProvider @Inject constructor(val dao: GifDao) :
                 canVote = item.canVote
             )
         )
-
 
     override fun getAllFavourites(): Flowable<List<GifModel>> {
         return dao.getAllFavourites()
@@ -58,7 +57,6 @@ class RoomFavouritesDataProvider @Inject constructor(val dao: GifDao) :
                 }
             }
     }
-
 
     override fun deleteFavourite(item: GifModel) =
         dao.deleteFavourite(
