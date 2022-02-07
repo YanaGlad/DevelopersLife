@@ -24,7 +24,6 @@ class RetrofitModule {
     private val READ_TIMEOUT = 10L
     private val DOMAIN = "https://developerslife.ru/"
 
-
     @Provides
     @Reusable
     fun provideHttpClient(): OkHttpClient =
@@ -36,7 +35,6 @@ class RetrofitModule {
             .writeTimeout(WRITE_TIMEOUT, TimeUnit.SECONDS)
             .readTimeout(READ_TIMEOUT, TimeUnit.SECONDS)
             .build()
-
 
     @Provides
     @Reusable
@@ -54,5 +52,4 @@ class RetrofitModule {
     @Singleton
     fun getApi(@Named("GIFS") retrofit: Retrofit): Api =
         retrofit.create(Api::class.java)
-
 }

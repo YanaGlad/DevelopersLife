@@ -15,5 +15,4 @@ interface RemoteDataModule {
     @Binds
     @Reusable
     fun bindRemoteFavouritesDataProvider(remoteDataProviderImpl: RemoteDataProviderImpl) : RemoteDataProvider
-
 }

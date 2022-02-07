@@ -14,7 +14,5 @@ interface LocalDataModule {
 
     @Binds
     @Singleton
-    fun bindFavouritesDataProvider(roomFavouritesDataProvider: RoomFavouritesDataProvider)
-            : LocalFavouritesDataProvider
-
+    fun bindFavouritesDataProvider(roomFavouritesDataProvider: RoomFavouritesDataProvider): LocalFavouritesDataProvider
 }

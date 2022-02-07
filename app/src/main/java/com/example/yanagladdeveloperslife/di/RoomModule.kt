@@ -24,5 +24,4 @@ class RoomModule {
     @Provides
     @Singleton
     fun provideGifsDao(database: FavouritesDatabase) = database.gifDao()
-
 }
